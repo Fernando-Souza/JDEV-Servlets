@@ -13,11 +13,14 @@
 	<div class="login-page">
 		<div class="form">
 			<form action="LoginServlet" method="post" class="login-form">
+			<input type="hidden" value="<%=request.getParameter("url") %>" name="url">
 				Login: <input type="text" id="login" name="login"> <br>
 				<br>Senha: <input type="password" id="senha" name="senha"><br>
 				<br> <button type="submit" id="enviar" value="Salvar">SALVAR</button>
+				<h1>${msg}</h1>
 			</form>
 		</div>
+		
 	</div>
 </body>
 

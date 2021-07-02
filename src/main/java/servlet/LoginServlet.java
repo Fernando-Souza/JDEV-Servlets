@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import dao.LoginDAO;
 
 
-@WebServlet("/LoginServlet")
+@WebServlet(urlPatterns={"/principal/LoginServlet","/LoginServlet"})
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -38,17 +38,34 @@ public class LoginServlet extends HttpServlet {
 				
 		String login = request.getParameter("login");
 		String senha = request.getParameter("senha");
+		String url = request.getParameter("url");
 		
 		try {
-			if(daoLogin.validarLoginSenha(login, senha)) {
+			if(login != null && !login.isEmpty()&& senha != null && !senha.isEmpty()) {
 				
-				RequestDispatcher dispatcher =  request.getRequestDispatcher("acessoliberado.jsp");
+				if (daoLogin.validarLoginSenha(login, senha)) {
+				
+				request.getSession().setAttribute("usuario", daoLogin.getLogin());
+				
+				if(url==null || url.equals("null")) {
+					
+					url = "principal/principal.jsp";
+				}
+				RequestDispatcher dispatcher =  request.getRequestDispatcher(url);
 				dispatcher.forward(request, response);
 				
 			}else {
 				
-				RequestDispatcher dispatcher =  request.getRequestDispatcher("acessonegado.jsp");
-				request.setAttribute("msg","O login ou a senha não foi informado corretamente!");
+				RequestDispatcher dispatcher =  request.getRequestDispatcher("/index.jsp");
+				request.setAttribute("msg","Informe o login e senha corretamente!");
+				dispatcher.forward(request, response);
+				
+			}
+			
+			}else {
+				
+				RequestDispatcher dispatcher =  request.getRequestDispatcher("/index.jsp");
+				request.setAttribute("msg","Informe o login e senha corretamente!");
 				dispatcher.forward(request, response);
 				
 			}
