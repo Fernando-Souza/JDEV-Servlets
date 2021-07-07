@@ -43,6 +43,8 @@ public class LoginServlet extends HttpServlet {
 		try {
 			if(login != null && !login.isEmpty()&& senha != null && !senha.isEmpty()) {
 				
+				LoginDAO daoLogin = new LoginDAO();
+				
 				if (daoLogin.validarLoginSenha(login, senha)) {
 				
 				request.getSession().setAttribute("usuario", daoLogin.getLogin());
@@ -69,9 +71,12 @@ public class LoginServlet extends HttpServlet {
 				dispatcher.forward(request, response);
 				
 			}
-		} catch (SQLException | ServletException | IOException e) {
+		} catch (Exception e) {
 			
 			e.printStackTrace();
+			RequestDispatcher dispatcher =  request.getRequestDispatcher("/error.jsp");
+			request.setAttribute("msg",e.getMessage());
+			dispatcher.forward(request, response);
 		}
 
 	}
