@@ -1,13 +1,47 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-<h3> Seja bem vindo ao sistema em jsp</h3>
-<a href="cadastrousuario.jsp">Cadastro de usuários</a>
+<html lang="en">
+<jsp:include page="head.jsp"></jsp:include>
+
+  <body>
+ <!-- Pre-loader start -->
+<jsp:include page="theme-load.jsp"></jsp:include>  
+ <!-- Pre-loader end -->
+  <div id="pcoded" class="pcoded">
+      <div class="pcoded-overlay-box"></div>
+      <div class="pcoded-container navbar-wrapper">
+          <jsp:include page="navbar.jsp"></jsp:include>
+          
+          <div class="pcoded-main-container">
+              <div class="pcoded-wrapper">
+                 <jsp:include page="navbarmainmenu.jsp"/>
+                  <div class="pcoded-content">
+                      <!-- Page-header start -->
+                      <jsp:include page= "page-header.jsp"/>
+                      <!-- Page-header end -->
+                        <div class="pcoded-inner-content">
+                            <!-- Main-body start -->
+                            <div class="main-body">
+                                <div class="page-wrapper">
+                                    <!-- Page-body start -->
+                                    <div class="page-body">
+                                        <div class="row">
+                                           
+                                        </div>
+                                    </div>
+                                    <!-- Page-body end -->
+                                </div>
+                                <div id="styleSelector"> </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+    <!-- Required Jquery -->
+<jsp:include page="javascriptfile.jsp"></jsp:include>    
 </body>
+
 </html>
