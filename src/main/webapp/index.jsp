@@ -38,7 +38,7 @@ right:20%;
 </head>
 <body>
 <h1>Bem vindo ao curso JSP</h1>
-	<form action="LoginServlet" method="post" class="row g-3 needs-validation" novalidate>
+	<form action="<%= request.getContextPath() %>/LoginServlet" method="post" class="row g-3 needs-validation" novalidate>
 		<input type="hidden" value="<%=request.getParameter("url")%>"
 			name="url">			
 		<div class="mb-3">
