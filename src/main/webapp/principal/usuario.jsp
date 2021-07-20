@@ -32,37 +32,43 @@
 												<div class="card">
 													<div class="card-block">
 														<h4 class="sub-title">Cadastro de usuário</h4>
-														<form class="form-material">
+														<form class="form-material" action="<%= request.getContextPath()%>/salvarUsuario" method="post">
                                                             <div class="form-group form-default">
-                                                                <input type="text" name="footer-email" class="form-control" readonly="readonly">
+                                                                <input type="text" name="id" id="id" class="form-control" readonly="readonly" value=" ">
                                                                 <span class="form-bar"></span>
                                                                 <label class="float-label">ID</label>
                                                             </div>
                                                             <div class="form-group form-default">
-                                                                <input type="text" name="footer-email" class="form-control" required="">
+                                                                <input type="text" name="nome" id="nome" class="form-control" required="" value="">
                                                                 <span class="form-bar"></span>
                                                                 <label class="float-label">Nome</label>
                                                             </div>
                                                             <div class="form-group form-default">
-                                                                <input type="text" name="footer-email" class="form-control" required="">
+                                                                <input type="email" name="email" id="email" class="form-control" required="" autocomplete="off" value="">
                                                                 <span class="form-bar"></span>
                                                                 <label class="float-label">Email</label>
                                                             </div>
                                                             <div class="form-group form-default">
-                                                                <input type="password" name="footer-email" class="form-control" required="">
                                                                 <span class="form-bar"></span>
-                                                                <label class="float-label">Password</label>
+                                                                <input type="text" name="login" id="login" class="form-control" required="" autocomplete="off" value="">
+                                                                <label class="float-label">Login</label>
                                                             </div>
-                                                            <div>
-                                                            <button class="btn btn-primary waves-effect waves-light">Primary Button</button>
-                                                            </div>                                           
-                                                            
-                                                        </form>
+                                                            <div class="form-group form-default">
+                                                                <span class="form-bar"></span>
+                                                                <input type="password" name="senha" id="senha" class="form-control" required="" autocomplete="off" value="">
+                                                                <label class="float-label">Senha</label>
+                                                            </div>
+                                                          <div class="card-header">
+                                                            <button class="btn btn-primary btn-round ewaves-effect waves-light" id="novo">Novo</button>
+                                                            <button class="btn btn-success btn-round waves-effect waves-light" id="salvar">Salvar</button>
+                                                            <button class="btn btn-danger  btn-round waves-effect waves-light" id="excluir">Excluir</button>
+                                                          </div> 
+                                                        </form>                                                        
 													</div>
 												</div>
 											</div>
 										</div>
-
+										<span>${msg_sucesso}</span>										
 									</div>
 									<!-- Page-body end -->
 								</div>

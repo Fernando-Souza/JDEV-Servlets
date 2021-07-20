@@ -21,13 +21,15 @@ public class UsuarioDao {
 	
 	public void salvar (UsuarioBean usuario) {
 		
-		String query = "insert into usuario (login,senha) values (?,?)";
+		String query = "insert into usuario (login,senha,nome, email) values (?,?,?,?)";
 		
 		try {
 			PreparedStatement insert = conn.prepareStatement(query);
 			
 			insert.setString(1, usuario.getLogin());
-			insert.setString(2, usuario.getSenha());
+			insert.setString(2, usuario.getSenha());			
+			insert.setString(3, usuario.getNome());
+			insert.setString(4, usuario.getEmail());
 			
 			insert.execute();
 			conn.commit();
@@ -59,7 +61,7 @@ public class UsuarioDao {
 			
 			while(resultSet.next()) {
 				
-				UsuarioBean usuario =  new UsuarioBean(resultSet.getLong("id"),resultSet.getString("login"),resultSet.getString("senha"));
+				UsuarioBean usuario =  new UsuarioBean(resultSet.getLong("id"),resultSet.getString("nome"),resultSet.getString("email"),resultSet.getString("login"),resultSet.getString("senha"));
 				listar.add(usuario);
 				
 			}
@@ -108,7 +110,7 @@ public UsuarioBean consultar(String user){
 		
 		if(resultSet.next()) {
 			
-			usuario =  new UsuarioBean(resultSet.getLong("id"),resultSet.getString("login"),resultSet.getString("senha"));
+			usuario =  new UsuarioBean(resultSet.getLong("id"),resultSet.getString("nome"),resultSet.getString("email"),resultSet.getString("login"),resultSet.getString("senha"));
 						
 		}
 		
@@ -125,13 +127,15 @@ public UsuarioBean consultar(String user){
 
 public void atualizar(UsuarioBean user){
 	
-	String query = "update usuario set login=?, senha=? where id=?";
+	String query = "update usuario set nome=?, email=?, login=?, senha=? where id=?";
 		
 	try {
 		PreparedStatement statment =  conn.prepareStatement(query);
-		statment.setString(1,user.getLogin());
-		statment.setString(2,user.getSenha());
-		statment.setLong(3,user.getId());
+		statment.setString(1,user.getNome());
+		statment.setString(2,user.getEmail());
+		statment.setString(3,user.getLogin());
+		statment.setString(4,user.getSenha());
+		statment.setLong(5,user.getId());
 		
 		statment.executeUpdate();
 		
