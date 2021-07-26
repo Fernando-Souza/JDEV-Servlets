@@ -38,9 +38,8 @@
 															<input type="hidden" name="acao" id="acao" value="">
 															<div class="form-group form-default form-static-label">
 																<input type="text" name="id" id="id"
-																	class="form-control" 
-																	value="${newuser.id}"> <span class="form-bar"></span>
-																<label class="float-label">ID</label>
+																	class="form-control" value="${newuser.id}"> <span
+																	class="form-bar"></span> <label class="float-label">ID</label>
 															</div>
 															<div class="form-group form-default form-static-label">
 																<input type="text" name="nome" id="nome"
@@ -73,10 +72,10 @@
 																	id="salvar">Cadastrar</button>
 																<button type="button"
 																	class="btn btn-primary btn-round ewaves-effect waves-light"
-																	onClick="limpaForm()" id="novo">Editar</button>																
+																	onClick="limpaForm()" id="novo">Editar</button>
 																<button type="button"
 																	class="btn btn-danger  btn-round waves-effect waves-light"
-																	id="excluir" onClick="criarDelete()">Excluir</button>
+																	id="excluir" onClick="criaDeleteComAjax()">Excluir</button>
 															</div>
 														</form>
 													</div>
@@ -98,8 +97,6 @@
 	<!-- Required Jquery -->
 	<jsp:include page="javascriptfile.jsp"></jsp:include>
 	<script type="text/javascript">
-
-	
 		function limpaForm() {
 
 			var elementos = document.getElementById("userForm").elements;
@@ -109,16 +106,37 @@
 
 			}
 		}
-		
+
 		function criarDelete() {
 
-			if(confirm("Deseja realmente excluir os dados?")){
-			document.getElementById("userForm").method = 'get';
-			document.getElementById("acao").value = 'deletar';
-			document.getElementById("userForm").submit();
+			if (confirm("Deseja realmente excluir os dados?")) {
+				document.getElementById("userForm").method = 'get';
+				document.getElementById("acao").value = 'deletar';
+				document.getElementById("userForm").submit();
 			}
 		}
-				
+
+		function criaDeleteComAjax() {
+			if (confirm("Deseja realmente excluir os dados?")) {
+				var urlAction = document.getElementById('userForm').action;
+				var idUser = document.getElementById('id').value;
+				$.ajax({
+					method: "get",
+					url:urlAction,
+					data:"id="+ idUser + "&acao=deletarajax",
+					success: function(response){
+						limpaForm();
+						alert(response)
+						}
+
+					
+				}).fail(function(xhr, status, errorThrown) {
+					alert('Erro ao deletar usuário por id' + xhr.responseText);
+				});
+
+			}
+
+		}
 	</script>
 </body>
 
