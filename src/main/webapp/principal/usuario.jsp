@@ -32,43 +32,58 @@
 												<div class="card">
 													<div class="card-block">
 														<h4 class="sub-title">Cadastro de usuário</h4>
-														<form class="form-material" action="<%= request.getContextPath()%>/salvarUsuario" method="post">
-                                                            <div class="form-group form-default">
-                                                                <input type="text" name="id" id="id" class="form-control" readonly="readonly" value=" ">
-                                                                <span class="form-bar"></span>
-                                                                <label class="float-label">ID</label>
-                                                            </div>
-                                                            <div class="form-group form-default">
-                                                                <input type="text" name="nome" id="nome" class="form-control" required="" value="">
-                                                                <span class="form-bar"></span>
-                                                                <label class="float-label">Nome</label>
-                                                            </div>
-                                                            <div class="form-group form-default">
-                                                                <input type="email" name="email" id="email" class="form-control" required="" autocomplete="off" value="">
-                                                                <span class="form-bar"></span>
-                                                                <label class="float-label">Email</label>
-                                                            </div>
-                                                            <div class="form-group form-default">
-                                                                <span class="form-bar"></span>
-                                                                <input type="text" name="login" id="login" class="form-control" required="" autocomplete="off" value="">
-                                                                <label class="float-label">Login</label>
-                                                            </div>
-                                                            <div class="form-group form-default">
-                                                                <span class="form-bar"></span>
-                                                                <input type="password" name="senha" id="senha" class="form-control" required="" autocomplete="off" value="">
-                                                                <label class="float-label">Senha</label>
-                                                            </div>
-                                                          <div class="card-header">
-                                                            <button class="btn btn-primary btn-round ewaves-effect waves-light" id="novo">Novo</button>
-                                                            <button class="btn btn-success btn-round waves-effect waves-light" id="salvar">Salvar</button>
-                                                            <button class="btn btn-danger  btn-round waves-effect waves-light" id="excluir">Excluir</button>
-                                                          </div> 
-                                                        </form>                                                        
+														<form class="form-material"
+															action="<%=request.getContextPath()%>/salvarUsuario"
+															id="userForm" method="post">
+															<input type="hidden" name="acao" id="acao" value="">
+															<div class="form-group form-default form-static-label">
+																<input type="text" name="id" id="id"
+																	class="form-control" 
+																	value="${newuser.id}"> <span class="form-bar"></span>
+																<label class="float-label">ID</label>
+															</div>
+															<div class="form-group form-default form-static-label">
+																<input type="text" name="nome" id="nome"
+																	class="form-control" required="required"
+																	value="${newuser.nome}"> <span class="form-bar"></span>
+																<label class="float-label">Nome</label>
+															</div>
+															<div class="form-group form-default form-static-label">
+																<input type="email" name="email" id="email"
+																	class="form-control" required="required"
+																	value="${newuser.email}"> <span
+																	class="form-bar"></span> <label class="float-label">Email</label>
+															</div>
+															<div class="form-group form-default form-static-label">
+																<span class="form-bar"></span> <input type="text"
+																	name="login" id="login" class="form-control"
+																	required="required" autocomplete="off"
+																	value="${newuser.login}"> <label
+																	class="float-label">Login</label>
+															</div>
+															<div class="form-group form-default form-static-label">
+																<span class="form-bar"></span> <input type="password"
+																	name="senha" id="senha" class="form-control"
+																	required="required" autocomplete="off" value="">
+																<label class="float-label">Senha</label>
+															</div>
+															<div class="card-header">
+																<button type="submit"
+																	class="btn btn-success btn-round waves-effect waves-light"
+																	id="salvar">Cadastrar</button>
+																<button type="button"
+																	class="btn btn-primary btn-round ewaves-effect waves-light"
+																	onClick="limpaForm()" id="novo">Editar</button>																
+																<button type="button"
+																	class="btn btn-danger  btn-round waves-effect waves-light"
+																	id="excluir" onClick="criarDelete()">Excluir</button>
+															</div>
+														</form>
 													</div>
 												</div>
 											</div>
 										</div>
-										<span>${msg_sucesso}</span>										
+										<span>${msg_sucesso}</span>
 									</div>
 									<!-- Page-body end -->
 								</div>
@@ -82,6 +97,29 @@
 	</div>
 	<!-- Required Jquery -->
 	<jsp:include page="javascriptfile.jsp"></jsp:include>
+	<script type="text/javascript">
+
+	
+		function limpaForm() {
+
+			var elementos = document.getElementById("userForm").elements;
+			for (p = 0; p < elementos.length; p++) {
+
+				elementos[p].value = "";
+
+			}
+		}
+		
+		function criarDelete() {
+
+			if(confirm("Deseja realmente excluir os dados?")){
+			document.getElementById("userForm").method = 'get';
+			document.getElementById("acao").value = 'deletar';
+			document.getElementById("userForm").submit();
+			}
+		}
+				
+	</script>
 </body>
 
 </html>

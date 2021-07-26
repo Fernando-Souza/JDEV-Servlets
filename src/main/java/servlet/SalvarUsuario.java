@@ -27,21 +27,35 @@ public class SalvarUsuario extends HttpServlet {
 			throws ServletException, IOException {
 
 		String acao = request.getParameter("acao");
-		String user = request.getParameter("user");
+		String idUser = request.getParameter("id");
+		
+		try {
 
-		if (acao.equalsIgnoreCase("delete")) {
-			daoUser.delete(user);
+		if (acao.equalsIgnoreCase("deletar") && idUser!=null) {
+			daoUser.delete(idUser);
 			RequestDispatcher view = request.getRequestDispatcher("principal/usuario.jsp");
 			request.setAttribute("usuarios", daoUser.listar());
+			request.setAttribute("msg","Usuário removido com sucesso!");
 			view.forward(request, response);
 		}
 		if (acao.equalsIgnoreCase("editar")) {
 
-			UsuarioBean userBean = daoUser.consultar(user);
+			UsuarioBean userBean = daoUser.consultar(idUser);
 			RequestDispatcher view = request.getRequestDispatcher("principal/usuario.jsp");
 			request.setAttribute("user", userBean);
 			view.forward(request, response);
 
+		}
+		
+		} 
+		catch(Exception e){
+			
+			e.printStackTrace();
+			RequestDispatcher redirecionar = request.getRequestDispatcher("error.jsp");
+			request.setAttribute("msg", e.getMessage());
+			redirecionar.forward(request, response);
+			
+			
 		}
 
 	}
@@ -54,22 +68,25 @@ public class SalvarUsuario extends HttpServlet {
 		String email = request.getParameter("email");
 		String login = request.getParameter("login");
 		String senha = request.getParameter("senha");
+		
+		String msg ="Operação realizada com sucesso!";
 
 		UsuarioBean user = new UsuarioBean(id != null && !id.isEmpty() ? Long.parseLong(id) : null, nome, email, login,
 				senha);
 
-		if (id == null || id.isEmpty()) {
+		if (user.getId() == null & !daoUser.validarLogin(login)) {
+			
+			user = daoUser.salvar(user);
+			
 
-			daoUser.salvar(user);
+		}else {
 
-		} else {
+			msg = "Login já cadastrado no sistema.Informe um login diferente.";
 
-			daoUser.atualizar(user);
+		} 
 
-		}
-
-		request.setAttribute("msg_sucesso", "Operação realizada com sucesso!");
-		request.setAttribute("usuario", user);
+		request.setAttribute("newuser", user);
+		request.setAttribute("msg_sucesso", msg);		
 		request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 	}
 
