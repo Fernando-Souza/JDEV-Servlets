@@ -15,14 +15,20 @@ public class UsuarioBean {
 	
 	public UsuarioBean(Long id, String nome, String email,String login, String senha) {
 
-		this.id = id;
-		this.nome = nome;
-		this.email=email;
-		this.login = login;
+		this(id, nome,email,login);
 		this.senha = senha;
 	
 
-	}	
+	}
+	
+	public UsuarioBean(Long id, String nome, String email,String login) {
+
+		this.id = id;
+		this.nome = nome;
+		this.email=email;
+		this.login = login;	
+
+	}
 
 	public String getLogin() {
 		return login;

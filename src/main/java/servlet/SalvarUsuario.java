@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -8,6 +9,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import beans.UsuarioBean;
 import dao.UsuarioDao;
@@ -28,6 +31,7 @@ public class SalvarUsuario extends HttpServlet {
 
 		String acao = request.getParameter("acao");
 		String idUser = request.getParameter("id");
+		String nomeBusca = request.getParameter("nomeBusca");
 
 		try {
 
@@ -41,7 +45,14 @@ public class SalvarUsuario extends HttpServlet {
 
 				daoUser.delete(idUser);
 				response.getWriter().write("Excluído com sucesso!");
-			} else {
+			}else if (acao.equalsIgnoreCase("buscarUserAjax") && nomeBusca != null) {
+
+				List<UsuarioBean> usuariosDadosJson = daoUser.consultaByName(nomeBusca);
+				ObjectMapper mapper =  new ObjectMapper();
+				String json =  mapper.writeValueAsString(usuariosDadosJson);
+				response.getWriter().write(json);				
+			}
+			else {
 				RequestDispatcher view = request.getRequestDispatcher("principal/usuario.jsp");
 				view.forward(request, response);
 			}

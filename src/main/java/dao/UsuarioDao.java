@@ -122,6 +122,33 @@ public class UsuarioDao {
 		return usuario;
 
 	}
+	
+	public List<UsuarioBean> consultaByName(String nome) {
+
+		List<UsuarioBean> listar = new ArrayList<>();
+		String query = "select * from usuario where upper(nome) like upper(?) ";
+		try {			
+		
+			PreparedStatement statment = conn.prepareStatement(query);
+			statment.setString(1, "%" +nome+ "%");
+			ResultSet resultSet = statment.executeQuery();
+
+			while (resultSet.next()) {
+
+				UsuarioBean usuario = new UsuarioBean(resultSet.getLong("id"), resultSet.getString("nome"),
+						resultSet.getString("email"), resultSet.getString("login"));
+				listar.add(usuario);
+
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return listar;
+
+	}
 
 	public void atualizar(UsuarioBean user) {
 
