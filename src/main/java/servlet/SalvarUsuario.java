@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import beans.UsuarioBean;
 import dao.UsuarioDao;
 
-@WebServlet("/salvarUsuario")
+@WebServlet(urlPatterns = { "/salvarUsuario"})
 public class SalvarUsuario extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -45,14 +45,31 @@ public class SalvarUsuario extends HttpServlet {
 
 				daoUser.delete(idUser);
 				response.getWriter().write("Excluído com sucesso!");
-			}else if (acao.equalsIgnoreCase("buscarUserAjax") && nomeBusca != null) {
+
+			} else if (acao.equalsIgnoreCase("buscarUserAjax") && nomeBusca != null) {
 
 				List<UsuarioBean> usuariosDadosJson = daoUser.consultaByName(nomeBusca);
-				ObjectMapper mapper =  new ObjectMapper();
-				String json =  mapper.writeValueAsString(usuariosDadosJson);
-				response.getWriter().write(json);				
-			}
-			else {
+				ObjectMapper mapper = new ObjectMapper();
+				String json = mapper.writeValueAsString(usuariosDadosJson);
+				response.getWriter().write(json);
+
+			} else if (acao.equalsIgnoreCase("buscarEditar") && acao != null) {
+				String id = request.getParameter("id");
+				UsuarioBean user = daoUser.consultarById(id);
+				List<UsuarioBean> usuariosList = daoUser.listar();
+				request.setAttribute("userLogins", usuariosList);
+				request.setAttribute("newuser", user);
+				request.setAttribute("msg_sucesso", "Usuário em edição");
+				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
+
+			} else if (acao.equalsIgnoreCase("listarUser") && acao != null) {
+
+				List<UsuarioBean> usuariosList = daoUser.listar();
+				request.setAttribute("userLogins", usuariosList);
+				request.setAttribute("msg_sucesso", "Usuários carregados");
+				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
+
+			} else {
 				RequestDispatcher view = request.getRequestDispatcher("principal/usuario.jsp");
 				view.forward(request, response);
 			}

@@ -123,6 +123,32 @@ public class UsuarioDao {
 
 	}
 	
+	public UsuarioBean consultarById(String id) {
+
+		String query = "select * from usuario where id = ?";
+		UsuarioBean usuario = null;
+
+		try {
+			PreparedStatement statment = conn.prepareStatement(query);
+			statment.setLong(1, Long.parseLong(id));
+			ResultSet resultSet = statment.executeQuery();
+
+			if (resultSet.next()) {
+
+				usuario = new UsuarioBean(resultSet.getLong("id"), resultSet.getString("nome"),
+						resultSet.getString("email"), resultSet.getString("login"), resultSet.getString("senha"));
+
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return usuario;
+
+	}
+	
 	public List<UsuarioBean> consultaByName(String nome) {
 
 		List<UsuarioBean> listar = new ArrayList<>();

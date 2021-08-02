@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c"  uri = "http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <jsp:include page="head.jsp"></jsp:include>
@@ -72,7 +74,7 @@
 																	id="salvar">Cadastrar</button>
 																<button type="button"
 																	class="btn btn-primary btn-round ewaves-effect waves-light"
-																	onClick="limpaForm()" id="novo">Editar</button>
+																	onClick="limpaForm()" id="novo">Novo</button>
 																<button type="button"
 																	class="btn btn-danger  btn-round waves-effect waves-light"
 																	id="excluir" onClick="criaDeleteComAjax()">Excluir</button>
@@ -86,6 +88,27 @@
 											</div>
 										</div>
 										<span>${msg_sucesso}</span>
+										<div style="height: 300px; overflow: scroll">
+					<table class="table" id="tabelaresultadosview">
+						<thead>
+							<tr>
+								<th scope="col">ID</th>
+								<th scope="col">Nome</th>
+								
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${userLogins}" var="us">
+							<tr>
+							<td><c:out value="${us.id}"></c:out></td>
+							<td><c:out value="${us.nome}"></c:out></td>
+							<td><a class="btn btn-success" href="<%= request.getContextPath()%>/salvarUsuario?acao=buscarEditar&id=${us.id}">Ver</a></td>							
+							</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+
+				</div>
 									</div>
 									<!-- Page-body end -->
 								</div>
@@ -122,7 +145,7 @@
 								onclick="buscaUsuario();">Ir</button>
 						</div>
 					</div>
-					<div style = "height: 300px;overflow:scroll" >
+					<div style="height: 300px; overflow: scroll">
 						<table class="table" id="tabelaresultados">
 							<thead>
 								<tr>
@@ -135,20 +158,26 @@
 
 							</tbody>
 						</table>
-						
+
 					</div>
 
 				</div>
 				<div class="modal-footer">
-				<span id="totalresultados" style="position:relative;right:290px"></span>
+					<span id="totalresultados" style="position: relative"></span>
 					<button type="button" class="btn btn-secondary"
 						data-dismiss="modal">Close</button>
-				</div>
+				</div>				
 			</div>
 		</div>
 	</div>
 
 	<script type="text/javascript">
+		function verEditar(id) {
+
+			var urlAction = document.getElementById('userForm').action;
+			window.location.href = urlAction + '?acao=buscarEditar&id=' + id;
+		}
+
 		function buscaUsuario() {
 			var nomeBusca = document.getElementById("nomeBusca").value;
 
@@ -178,11 +207,15 @@
 																	+ json[p].id
 																	+ '</td><td>'
 																	+ json[p].nome
-																	+ '</td><td><button type="button" class="btn btn-info">Ver</button></td></tr>');
+																	+ '</td><td><button onClick="verEditar('
+																	+ json[p].id
+																	+ ')" type="button" class="btn btn-info">Ver</button></td></tr>');
 
 										}
 
-										document.getElementById("totalresultados").textContent = "Resultados encontrados:" + json.length;
+										document
+												.getElementById("totalresultados").textContent = "Resultados encontrados:"
+												+ json.length;
 									}
 
 								}).fail(
