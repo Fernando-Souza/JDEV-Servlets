@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c"  uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -56,6 +56,18 @@
 																	class="form-bar"></span> <label class="float-label">Email</label>
 															</div>
 															<div class="form-group form-default form-static-label">
+															
+															<select class="form-control" aria-label="Default select example"
+															name="perfil">
+																<option disabled="disabled">[Selecione o perfil]</option>
+																<option value="Administrador">Admin</option>
+																<option value="Secretaria">Secretária</option>
+																<option value="Auxiliar">Auxiliar</option>
+															</select>
+															<span class="form-bar"></span> <label class="float-label">Perfil</label>
+															</div>
+															
+															<div class="form-group form-default form-static-label">
 																<span class="form-bar"></span> <input type="text"
 																	name="login" id="login" class="form-control"
 																	required="required" autocomplete="off"
@@ -89,26 +101,27 @@
 										</div>
 										<span>${msg_sucesso}</span>
 										<div style="height: 300px; overflow: scroll">
-					<table class="table" id="tabelaresultadosview">
-						<thead>
-							<tr>
-								<th scope="col">ID</th>
-								<th scope="col">Nome</th>
-								
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach items="${userLogins}" var="us">
-							<tr>
-							<td><c:out value="${us.id}"></c:out></td>
-							<td><c:out value="${us.nome}"></c:out></td>
-							<td><a class="btn btn-success" href="<%= request.getContextPath()%>/salvarUsuario?acao=buscarEditar&id=${us.id}">Ver</a></td>							
-							</tr>
-							</c:forEach>
-						</tbody>
-					</table>
+											<table class="table" id="tabelaresultadosview">
+												<thead>
+													<tr>
+														<th scope="col">ID</th>
+														<th scope="col">Nome</th>
 
-				</div>
+													</tr>
+												</thead>
+												<tbody>
+													<c:forEach items="${userLogins}" var="us">
+														<tr>
+															<td><c:out value="${us.id}"></c:out></td>
+															<td><c:out value="${us.nome}"></c:out></td>
+															<td><a class="btn btn-success"
+																href="<%= request.getContextPath()%>/salvarUsuario?acao=buscarEditar&id=${us.id}">Ver</a></td>
+														</tr>
+													</c:forEach>
+												</tbody>
+											</table>
+
+										</div>
 									</div>
 									<!-- Page-body end -->
 								</div>
@@ -166,7 +179,7 @@
 					<span id="totalresultados" style="position: relative"></span>
 					<button type="button" class="btn btn-secondary"
 						data-dismiss="modal">Close</button>
-				</div>				
+				</div>
 			</div>
 		</div>
 	</div>

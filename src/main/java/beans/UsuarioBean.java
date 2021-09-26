@@ -7,26 +7,27 @@ public class UsuarioBean {
 	private String email;
 	private String login;
 	private String senha;
+	// private boolean admin = false;
+	private String perfil;
 
-		
 	public UsuarioBean() {
 
 	}
-	
-	public UsuarioBean(Long id, String nome, String email,String login, String senha) {
 
-		this(id, nome,email,login);
+	public UsuarioBean(Long id, String nome, String email, String login, String senha, String perfil) {
+
+		this(id, nome, email, login, perfil);
 		this.senha = senha;
-	
 
 	}
-	
-	public UsuarioBean(Long id, String nome, String email,String login) {
+
+	public UsuarioBean(Long id, String nome, String email, String login, String perfil) {
 
 		this.id = id;
 		this.nome = nome;
-		this.email=email;
-		this.login = login;	
+		this.email = email;
+		this.login = login;
+		this.perfil = perfil;
 
 	}
 
@@ -53,8 +54,6 @@ public class UsuarioBean {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	
 
 	public String getNome() {
 		return nome;
@@ -72,10 +71,23 @@ public class UsuarioBean {
 		this.email = email;
 	}
 
+	public boolean isAdmin() {
+
+		return perfil.equals("Administrador") ? true : false;
+	}
+
+	public String getPerfil() {
+		return perfil;
+	}
+
+	public void setPerfil(String perfil) {
+		this.perfil = perfil;
+	}
+
 	@Override
 	public String toString() {
 		return "UsuarioBean [id=" + id + ", nome=" + nome + ", email=" + email + ", login=" + login + ", senha=" + senha
-				+ "]";
+				+ ", perfil=" + perfil + "]";
 	}
 
 }
