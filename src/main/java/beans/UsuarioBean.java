@@ -7,27 +7,30 @@ public class UsuarioBean {
 	private String email;
 	private String login;
 	private String senha;
-	// private boolean admin = false;
+	private String sexo;
 	private String perfil;
+	private String fotouser;
+	private String extensaofoto;
 
 	public UsuarioBean() {
 
 	}
 
-	public UsuarioBean(Long id, String nome, String email, String login, String senha, String perfil) {
+	public UsuarioBean(Long id, String nome, String email, String login, String senha, String perfil, String sexo) {
 
-		this(id, nome, email, login, perfil);
+		this(id, nome, email, login, perfil, sexo);
 		this.senha = senha;
 
 	}
 
-	public UsuarioBean(Long id, String nome, String email, String login, String perfil) {
+	public UsuarioBean(Long id, String nome, String email, String login, String perfil, String sexo) {
 
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
 		this.login = login;
 		this.perfil = perfil;
+		this.sexo = sexo;
 
 	}
 
@@ -76,12 +79,36 @@ public class UsuarioBean {
 		return perfil.equals("Administrador") ? true : false;
 	}
 
+	public String getSexo() {
+		return sexo;
+	}
+
+	public void setSexo(String sexo) {
+		this.sexo = sexo;
+	}
+
 	public String getPerfil() {
 		return perfil;
 	}
 
 	public void setPerfil(String perfil) {
 		this.perfil = perfil;
+	}
+
+	public String getFotouser() {
+		return fotouser;
+	}
+
+	public void setFotouser(String fotouser) {
+		this.fotouser = fotouser;
+	}
+
+	public String getExtensaofoto() {
+		return extensaofoto;
+	}
+
+	public void setExtensaofoto(String extensaofoto) {
+		this.extensaofoto = extensaofoto;
 	}
 
 	@Override

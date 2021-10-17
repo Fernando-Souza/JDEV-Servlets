@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page import="beans.UsuarioBean" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -34,7 +35,7 @@
 												<div class="card">
 													<div class="card-block">
 														<h4 class="sub-title">Cadastro de usuário</h4>
-														<form class="form-material"
+														<form class="form-material" enctype="multipart/form-data"
 															action="<%=request.getContextPath()%>/salvarUsuario"
 															id="userForm" method="post">
 															<input type="hidden" name="acao" id="acao" value="">
@@ -42,6 +43,12 @@
 																<input type="text" name="id" id="id"
 																	class="form-control" value="${newuser.id}"> <span
 																	class="form-bar"></span> <label class="float-label">ID</label>
+															</div>
+															<div class="form-group form-default input-group mb4">
+															<div class="input-group-prepend">
+															<img alt="imagem user" id="fotobase64" src="" width="70px">															
+															</div>
+															<input type="file" id="fileFoto" name="fileFoto" accept="image/*" onchange="visualizarImg('fotobase64','fileFoto')" class="form-control-file" style="margin-top: 15px; margin-left:15px">
 															</div>
 															<div class="form-group form-default form-static-label">
 																<input type="text" name="nome" id="nome"
@@ -56,17 +63,72 @@
 																	class="form-bar"></span> <label class="float-label">Email</label>
 															</div>
 															<div class="form-group form-default form-static-label">
-															
-															<select class="form-control" aria-label="Default select example"
-															name="perfil">
-																<option disabled="disabled">[Selecione o perfil]</option>
-																<option value="Administrador">Admin</option>
-																<option value="Secretaria">Secretária</option>
-																<option value="Auxiliar">Auxiliar</option>
-															</select>
-															<span class="form-bar"></span> <label class="float-label">Perfil</label>
+
+																<select class="form-control"
+																	aria-label="Default select example" name="perfil">
+																	<option disabled="disabled">[Selecione o
+																		perfil]</option>
+																	<option value="Administrador" <%
+																	
+																	UsuarioBean usuario = (UsuarioBean) request.getAttribute("newuser");
+																	
+																	if(usuario!=null && usuario.getPerfil().equals("Administrador")){
+																		
+																		out.print(" ");
+																		out.print("selected=\"selected\"");
+																		out.print(" ");
+																		
+																	}%>>Administrador</option>
+																	
+																	<option value="Secretaria" <%																
+																	
+																	
+																	if(usuario!=null && usuario.getPerfil().equals("Secretaria")){														
+																
+																		
+																		out.print(" ");
+																		out.print("selected=\"selected\"");
+																		out.print(" ");
+																		
+																	}%>>Secretária</option>
+																	<option value="Auxiliar" <%
+																	
+																	if(usuario!=null && usuario.getPerfil().equals("Auxiliar")){
+																		
+																		out.print(" ");
+																		out.print("selected =\"selected\"");
+																		out.print(" ");
+																		
+																	}%>>Auxiliar</option>
+																</select> <span class="form-bar"></span> <label
+																	class="float-label">Perfil</label>
 															</div>
-															
+															<div class="form-group form-default form-float-label">
+																<input type="radio" name="sexo" value="Masculino"<%
+																
+																UsuarioBean user = (UsuarioBean) request.getAttribute("newuser");
+																
+																if(user != null && user.getSexo().equals("Masculino")){
+																	out.print(" ");
+																	out.print("checked=\"checked\"");
+																	out.print(" ");
+																}
+																
+																%>>Masculino</>
+																<input type="radio" name="sexo" value="Feminino" <%
+																
+																
+																
+																if(user != null && user.getSexo().equals("Feminino")){
+																	out.print(" ");
+																	out.print("checked=\"checked\"");
+																	out.print(" ");
+																}
+																
+																%>>Feminino</>
+														    	
+														    </div>
+
 															<div class="form-group form-default form-static-label">
 																<span class="form-bar"></span> <input type="text"
 																	name="login" id="login" class="form-control"
@@ -79,7 +141,7 @@
 																	name="senha" id="senha" class="form-control"
 																	required="required" autocomplete="off" value="">
 																<label class="float-label">Senha</label>
-															</div>
+															</div>															
 															<div class="card-header">
 																<button type="submit"
 																	class="btn btn-success btn-round waves-effect waves-light"
@@ -185,6 +247,31 @@
 	</div>
 
 	<script type="text/javascript">
+
+	function visualizarImg(fotobase64,fileFoto){
+
+		var preview = document.getElementById(fotobase64);
+		var fileUser= document.getElementById(fileFoto).files[0];
+		var reader =  new FileReader();
+		reader.onloadend =  function(){
+
+			preview.src = reader.result;
+
+			};
+
+			if(fileUser){
+
+				reader.readAsDataURL(fileUser);
+				}else{
+
+					preview.src='';
+
+					}
+
+
+
+
+		}
 		function verEditar(id) {
 
 			var urlAction = document.getElementById('userForm').action;

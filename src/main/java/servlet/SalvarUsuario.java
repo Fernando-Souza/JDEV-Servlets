@@ -5,9 +5,15 @@ import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -15,6 +21,7 @@ import beans.UsuarioBean;
 import dao.UsuarioDao;
 
 @WebServlet(urlPatterns = { "/salvarUsuario" })
+@MultipartConfig
 public class SalvarUsuario extends Util_Servlet {
 	private static final long serialVersionUID = 1L;
 
@@ -103,11 +110,24 @@ public class SalvarUsuario extends Util_Servlet {
 		String login = request.getParameter("login");
 		String senha = request.getParameter("senha");
 		String perfil = request.getParameter("perfil");
+		String sexo = request.getParameter("sexo");
 
 		String msg = "Operação realizada com sucesso!";
 
 		UsuarioBean user = new UsuarioBean(id != null && !id.isEmpty() ? Long.parseLong(id) : null, nome, email, login,
-				perfil);
+				senha, perfil, sexo);
+
+		if (ServletFileUpload.isMultipartContent(request)) {
+
+			Part part = request.getPart("fileFoto"); // pegaa foto da tel
+			byte[] foto = IOUtils.toByteArray(part.getInputStream());
+			String imagebase64 = "data:image/" + part.getContentType().split("/")[1] + ";base64,"
+					+ Base64.encodeBase64String(foto);
+
+			user.setFotouser(imagebase64);
+			user.setExtensaofoto(part.getContentType().split("/")[1]);
+
+		}
 
 		if (user.getId() == null & !daoUser.validarLogin(login)) {
 
