@@ -46,7 +46,14 @@
 															</div>
 															<div class="form-group form-default input-group mb4">
 															<div class="input-group-prepend">
-															<img alt="imagem user" id="fotobase64" src="" width="70px">															
+															<c:choose>
+															<c:when test="${newuser.fotouser != '' && newuser.fotouser !=null }">
+															<img alt="imagem user" id="fotobase64" src="${newuser.fotouser }" width="70px">
+															</c:when>
+															<c:when test="${newuser.fotouser == '' }">
+															<img alt="imagem user" id="fotobase64" src="../assets/images/avatar-1.jpg" width="70px">
+															</c:when>
+															</c:choose>																						
 															</div>
 															<input type="file" id="fileFoto" name="fileFoto" accept="image/*" onchange="visualizarImg('fotobase64','fileFoto')" class="form-control-file" style="margin-top: 15px; margin-left:15px">
 															</div>

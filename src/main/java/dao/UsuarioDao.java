@@ -170,7 +170,7 @@ public class UsuarioDao {
 
 				usuario = new UsuarioBean(resultSet.getLong("id"), resultSet.getString("nome"),
 						resultSet.getString("email"), resultSet.getString("login"), resultSet.getString("senha"),
-						resultSet.getString("useradmin"), resultSet.getString("sexo"));
+						resultSet.getString("useradmin"), resultSet.getString("sexo"), resultSet.getString("imagem"));
 
 			}
 

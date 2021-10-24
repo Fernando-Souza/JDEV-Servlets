@@ -16,6 +16,15 @@ public class UsuarioBean {
 
 	}
 
+	public UsuarioBean(Long id, String nome, String email, String login, String senha, String perfil, String sexo,
+			String foto) {
+
+		this(id, nome, email, login, perfil, sexo);
+		this.senha = senha;
+		this.fotouser = foto;
+
+	}
+
 	public UsuarioBean(Long id, String nome, String email, String login, String senha, String perfil, String sexo) {
 
 		this(id, nome, email, login, perfil, sexo);
