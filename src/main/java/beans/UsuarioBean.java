@@ -10,6 +10,7 @@ public class UsuarioBean {
 	private String sexo;
 	private String perfil;
 	private String fotouser;
+	private String image64;
 	private String extensaofoto;
 
 	public UsuarioBean() {
@@ -22,6 +23,18 @@ public class UsuarioBean {
 		this(id, nome, email, login, perfil, sexo);
 		this.senha = senha;
 		this.fotouser = foto;
+		;
+
+	}
+
+	public UsuarioBean(Long id, String nome, String email, String login, String senha, String perfil, String sexo,
+			String image64, String extensaofoto) {
+
+		this(id, nome, email, login, perfil, sexo);
+		this.senha = senha;
+		this.image64 = image64;
+		this.extensaofoto = extensaofoto;
+		this.fotouser = "data:image/" + extensaofoto + ";base64," + image64;
 
 	}
 
@@ -110,6 +123,19 @@ public class UsuarioBean {
 
 	public void setFotouser(String fotouser) {
 		this.fotouser = fotouser;
+	}
+
+	public void setFotouser(String baset64, String extensao) {
+
+		this.fotouser = "data:image/" + extensaofoto + ";base64," + image64;
+	}
+
+	public String getImage64() {
+		return image64;
+	}
+
+	public void setImage64(String image64) {
+		this.image64 = image64;
 	}
 
 	public String getExtensaofoto() {

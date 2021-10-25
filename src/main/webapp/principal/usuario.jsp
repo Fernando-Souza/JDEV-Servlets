@@ -47,10 +47,12 @@
 															<div class="form-group form-default input-group mb4">
 															<div class="input-group-prepend">
 															<c:choose>
-															<c:when test="${newuser.fotouser != '' && newuser.fotouser !=null }">
+															<c:when test="${newuser.image64 != '' && newuser.image64 !=null }">
+															<a href="<%= request.getContextPath()%>/salvarUsuario?acao=downloadFoto&id=${newuser.id}">
 															<img alt="imagem user" id="fotobase64" src="${newuser.fotouser }" width="70px">
+															</a>
 															</c:when>
-															<c:when test="${newuser.fotouser == '' }">
+															<c:when test="${newuser.image64 == '' }">
 															<img alt="imagem user" id="fotobase64" src="../assets/images/avatar-1.jpg" width="70px">
 															</c:when>
 															</c:choose>																						

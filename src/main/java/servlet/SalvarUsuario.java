@@ -62,7 +62,7 @@ public class SalvarUsuario extends Util_Servlet {
 
 			} else if (acao.equalsIgnoreCase("buscarEditar") && acao != null) {
 				String id = request.getParameter("id");
-				UsuarioBean user = daoUser.consultarById(id);
+				UsuarioBean user = daoUser.consultarById(id, super.getUsuarioLogado(request));
 				List<UsuarioBean> usuariosList = daoUser.listar(super.getUsuarioLogado(request));
 				request.setAttribute("userLogins", usuariosList);
 				request.setAttribute("newuser", user);
@@ -76,6 +76,15 @@ public class SalvarUsuario extends Util_Servlet {
 				request.setAttribute("msg_sucesso", "Usuários carregados");
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 
+			} else if (acao.equalsIgnoreCase("downloadFoto") && acao != null) {
+
+				UsuarioBean usuario = daoUser.consultarById(idUser, super.getUsuarioLogado(request));
+				if (usuario.getImage64() != null && !usuario.getImage64().isEmpty()) {
+
+					response.setHeader("Content-Disposition",
+							"attatchment;filename=arquivo." + usuario.getExtensaofoto());
+					response.getOutputStream().write(new Base64().decodeBase64(usuario.getImage64()));
+				}
 			} else {
 				RequestDispatcher view = request.getRequestDispatcher("principal/usuario.jsp");
 				view.forward(request, response);
@@ -125,6 +134,7 @@ public class SalvarUsuario extends Util_Servlet {
 					+ Base64.encodeBase64String(foto);
 
 			user.setFotouser(imagebase64);
+			user.setImage64(Base64.encodeBase64String(foto));
 			user.setExtensaofoto(part.getContentType().split("/")[1]);
 
 		}
