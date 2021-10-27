@@ -26,9 +26,9 @@ public class UsuarioDao {
 
 		try {
 
-			if (consultar(usuario.getLogin()) == null) {
+			if (consultarUsuario(usuario.getLogin()) == null) {
 
-				query = "insert into usuario (login,senha,nome, email,imagem,tipofile,useradmin,usuario_id,sexo) values (?,?,?,?,?,?,?,?,?)";
+				query = "insert into usuario (login,senha,nome, email,imagem,tipofile,useradmin,usuario_id,sexo,cep,rua,bairro,cidade,uf,numero) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 				insert = conn.prepareStatement(query);
 
 				insert.setString(1, usuario.getLogin());
@@ -40,6 +40,12 @@ public class UsuarioDao {
 				insert.setString(7, usuario.getPerfil());
 				insert.setLong(8, usuarioLogado);
 				insert.setString(9, usuario.getSexo());
+				insert.setString(10, usuario.getCep());
+				insert.setString(11, usuario.getRua());
+				insert.setString(12, usuario.getBairro());
+				insert.setString(13, usuario.getCidade());
+				insert.setString(14, usuario.getUf());
+				insert.setString(15, usuario.getNumero());
 
 				insert.execute();
 				conn.commit();
@@ -51,7 +57,7 @@ public class UsuarioDao {
 
 					insert.setString(1, usuario.getImage64());
 					insert.setString(2, usuario.getExtensaofoto());
-					insert.setLong(3, consultar(usuario.getLogin()).getId());
+					insert.setLong(3, consultarUsuario(usuario.getLogin()).getId());
 
 					insert.executeUpdate();
 					conn.commit();
@@ -77,14 +83,53 @@ public class UsuarioDao {
 
 		}
 
-		return this.consultar(usuario.getLogin());
+		return this.consultarUsuario(usuario.getLogin());
+	}
+
+	public void atualizar(UsuarioBean user) {
+
+		String query = "update usuario set nome=?, email=?, imagem=?,tipofile=?,login=?, senha=?,"
+				+ "useradmin=?, sexo=?,cep=?,rua=?,bairro=?,cidade=?,uf=?,numero=? where id=?";
+
+		try {
+			PreparedStatement statment = conn.prepareStatement(query);
+			statment.setString(1, user.getNome());
+			statment.setString(2, user.getEmail());
+			statment.setString(3, user.getImage64());
+			statment.setString(4, user.getExtensaofoto());
+			statment.setString(5, user.getLogin());
+			statment.setString(6, user.getSenha());
+			statment.setString(7, user.getPerfil());
+			statment.setString(8, user.getSexo());
+			statment.setString(9, user.getCep());
+			statment.setString(10, user.getRua());
+			statment.setString(11, user.getBairro());
+			statment.setString(12, user.getCidade());
+			statment.setString(13, user.getUf());
+			statment.setString(14, user.getNumero());
+			statment.setLong(15, user.getId());
+
+			statment.executeUpdate();
+			conn.commit();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+
 	}
 
 	public List<UsuarioBean> listar(Long usuarioLogado) {
 
 		List<UsuarioBean> listar = new ArrayList<>();
 
-		String query = "select * from usuario where useradmin != 'Administrador' and usuario_id = ?";
+		String query = "select * from usuario where usuario_id = ?";
 		try {
 			PreparedStatement statment = conn.prepareStatement(query);
 			statment.setLong(1, usuarioLogado);
@@ -93,9 +138,25 @@ public class UsuarioDao {
 
 			while (resultSet.next()) {
 
-				UsuarioBean usuario = new UsuarioBean(resultSet.getLong("id"), resultSet.getString("nome"),
-						resultSet.getString("email"), resultSet.getString("login"), resultSet.getString("senha"),
-						resultSet.getString("useradmin"), resultSet.getString("sexo"));
+				Long id = resultSet.getLong("id");
+				String nome = resultSet.getString("nome");
+				String email = resultSet.getString("email");
+				String login = resultSet.getString("login");
+				String senha = resultSet.getString("senha");
+				String sexo = resultSet.getString("sexo");
+				String image64 = resultSet.getString("imagem");
+				String tipofile = resultSet.getString("tipofile");
+				String perfil = resultSet.getString("useradmin");
+
+				UsuarioBean usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipofile);
+
+				usuario.setCep(resultSet.getString("cep"));
+				usuario.setRua(resultSet.getString("rua"));
+				usuario.setBairro(resultSet.getString("bairro"));
+				usuario.setCidade(resultSet.getString("cidade"));
+				usuario.setUf(resultSet.getString("uf"));
+				usuario.setNumero(resultSet.getString("numero"));
+
 				listar.add(usuario);
 
 			}
@@ -109,10 +170,10 @@ public class UsuarioDao {
 
 	}
 
-	public List<UsuarioBean> listar() {
+	public List<UsuarioBean> listarTodos() {
 
 		List<UsuarioBean> listar = new ArrayList<>();
-		String query = "select * from usuario where useradmin != 'Administrador'";
+		String query = "select * from usuario";
 		try {
 			PreparedStatement statment = conn.prepareStatement(query);
 
@@ -120,9 +181,25 @@ public class UsuarioDao {
 
 			while (resultSet.next()) {
 
-				UsuarioBean usuario = new UsuarioBean(resultSet.getLong("id"), resultSet.getString("nome"),
-						resultSet.getString("email"), resultSet.getString("login"), resultSet.getString("senha"),
-						resultSet.getString("useradmin"), resultSet.getString("sexo"));
+				Long id = resultSet.getLong("id");
+				String nome = resultSet.getString("nome");
+				String email = resultSet.getString("email");
+				String login = resultSet.getString("login");
+				String senha = resultSet.getString("senha");
+				String sexo = resultSet.getString("sexo");
+				String image64 = resultSet.getString("imagem");
+				String tipoFile = resultSet.getString("tipofile");
+				String perfil = resultSet.getString("useradmin");
+
+				UsuarioBean usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipoFile);
+
+				usuario.setCep(resultSet.getString("cep"));
+				usuario.setRua(resultSet.getString("rua"));
+				usuario.setBairro(resultSet.getString("bairro"));
+				usuario.setCidade(resultSet.getString("cidade"));
+				usuario.setUf(resultSet.getString("uf"));
+				usuario.setNumero(resultSet.getString("numero"));
+
 				listar.add(usuario);
 
 			}
@@ -138,7 +215,7 @@ public class UsuarioDao {
 
 	public void delete(String id) {
 
-		String sql = "delete from usuario where id=? and useradmin != 'Administrador'";
+		String sql = "delete from usuario where id=?";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setLong(1, Long.parseLong(id));
@@ -158,34 +235,6 @@ public class UsuarioDao {
 
 	}
 
-	public UsuarioBean consultar(String login) {
-
-		String query = "select * from usuario where upper(login) = upper(?)";
-		UsuarioBean usuario = null;
-
-		try {
-			PreparedStatement statment = conn.prepareStatement(query);
-			statment.setString(1, login);
-			ResultSet resultSet = statment.executeQuery();
-
-			if (resultSet.next()) {
-
-				usuario = new UsuarioBean(resultSet.getLong("id"), resultSet.getString("nome"),
-						resultSet.getString("email"), resultSet.getString("login"), resultSet.getString("senha"),
-						resultSet.getString("useradmin"), resultSet.getString("sexo"), resultSet.getString("imagem"),
-						resultSet.getString("tipofile"));
-
-			}
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return usuario;
-
-	}
-
 	public UsuarioBean consultarUsuario(String login) {
 
 		String query = "select * from usuario where upper(login) = upper(?)";
@@ -198,9 +247,23 @@ public class UsuarioDao {
 
 			if (resultSet.next()) {
 
-				usuario = new UsuarioBean(resultSet.getLong("id"), resultSet.getString("nome"),
-						resultSet.getString("email"), resultSet.getString("login"), resultSet.getString("senha"),
-						resultSet.getString("useradmin"), resultSet.getString("sexo"));
+				Long id = resultSet.getLong("id");
+				String nome = resultSet.getString("nome");
+				String email = resultSet.getString("email");
+				String senha = resultSet.getString("senha");
+				String sexo = resultSet.getString("sexo");
+				String image64 = resultSet.getString("imagem");
+				String tipoFile = resultSet.getString("tipofile");
+				String perfil = resultSet.getString("useradmin");
+
+				usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipoFile);
+
+				usuario.setCep(resultSet.getString("cep"));
+				usuario.setRua(resultSet.getString("rua"));
+				usuario.setBairro(resultSet.getString("bairro"));
+				usuario.setCidade(resultSet.getString("cidade"));
+				usuario.setUf(resultSet.getString("uf"));
+				usuario.setNumero(resultSet.getString("numero"));
 
 			}
 
@@ -225,9 +288,23 @@ public class UsuarioDao {
 
 			if (resultSet.next()) {
 
-				usuario = new UsuarioBean(resultSet.getLong("id"), resultSet.getString("nome"),
-						resultSet.getString("email"), resultSet.getString("login"), resultSet.getString("senha"),
-						resultSet.getString("useradmin"), resultSet.getString("sexo"));
+				Long id = resultSet.getLong("id");
+				String nome = resultSet.getString("nome");
+				String email = resultSet.getString("email");
+				String senha = resultSet.getString("senha");
+				String sexo = resultSet.getString("sexo");
+				String image64 = resultSet.getString("imagem");
+				String tipoFile = resultSet.getString("tipofile");
+				String perfil = resultSet.getString("useradmin");
+
+				usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipoFile);
+
+				usuario.setCep(resultSet.getString("cep"));
+				usuario.setRua(resultSet.getString("rua"));
+				usuario.setBairro(resultSet.getString("bairro"));
+				usuario.setCidade(resultSet.getString("cidade"));
+				usuario.setUf(resultSet.getString("uf"));
+				usuario.setNumero(resultSet.getString("numero"));
 
 			}
 
@@ -252,9 +329,24 @@ public class UsuarioDao {
 
 			if (resultSet.next()) {
 
-				usuario = new UsuarioBean(resultSet.getLong("id"), resultSet.getString("nome"),
-						resultSet.getString("email"), resultSet.getString("login"), resultSet.getString("senha"),
-						resultSet.getString("useradmin"), resultSet.getString("sexo"));
+				String login = resultSet.getString("login");
+				String nome = resultSet.getString("nome");
+				String email = resultSet.getString("email");
+				String senha = resultSet.getString("senha");
+				String sexo = resultSet.getString("sexo");
+				String image64 = resultSet.getString("imagem");
+				String tipoFile = resultSet.getString("tipofile");
+				String perfil = resultSet.getString("useradmin");
+
+				usuario = new UsuarioBean(Long.parseLong(id), nome, email, login, senha, perfil, sexo, image64,
+						tipoFile);
+
+				usuario.setCep(resultSet.getString("cep"));
+				usuario.setRua(resultSet.getString("rua"));
+				usuario.setBairro(resultSet.getString("bairro"));
+				usuario.setCidade(resultSet.getString("cidade"));
+				usuario.setUf(resultSet.getString("uf"));
+				usuario.setNumero(resultSet.getString("numero"));
 
 			}
 
@@ -281,11 +373,24 @@ public class UsuarioDao {
 
 			if (resultSet.next()) {
 
-				usuario = new UsuarioBean(resultSet.getLong("id"), resultSet.getString("nome"),
-						resultSet.getString("email"), resultSet.getString("login"), resultSet.getString("senha"),
-						resultSet.getString("useradmin"), resultSet.getString("sexo"), resultSet.getString("imagem"),
-						resultSet.getString("tipofile"));
+				String login = resultSet.getString("login");
+				String nome = resultSet.getString("nome");
+				String email = resultSet.getString("email");
+				String senha = resultSet.getString("senha");
+				String sexo = resultSet.getString("sexo");
+				String image64 = resultSet.getString("imagem");
+				String tipoFile = resultSet.getString("tipofile");
+				String perfil = resultSet.getString("useradmin");
 
+				usuario = new UsuarioBean(Long.parseLong(id), nome, email, login, senha, perfil, sexo, image64,
+						tipoFile);
+
+				usuario.setCep(resultSet.getString("cep"));
+				usuario.setRua(resultSet.getString("rua"));
+				usuario.setBairro(resultSet.getString("bairro"));
+				usuario.setCidade(resultSet.getString("cidade"));
+				usuario.setUf(resultSet.getString("uf"));
+				usuario.setNumero(resultSet.getString("numero"));
 			}
 
 		} catch (SQLException e) {
@@ -311,9 +416,24 @@ public class UsuarioDao {
 
 			while (resultSet.next()) {
 
-				UsuarioBean usuario = new UsuarioBean(resultSet.getLong("id"), resultSet.getString("nome"),
-						resultSet.getString("email"), resultSet.getString("login"), resultSet.getString("useradmin"),
-						resultSet.getString("sexo"));
+				String login = resultSet.getString("login");
+				Long id = resultSet.getLong("id");
+				String email = resultSet.getString("email");
+				String senha = resultSet.getString("senha");
+				String sexo = resultSet.getString("sexo");
+				String image64 = resultSet.getString("imagem");
+				String tipoFile = resultSet.getString("tipofile");
+				String perfil = resultSet.getString("useradmin");
+
+				UsuarioBean usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipoFile);
+
+				usuario.setCep(resultSet.getString("cep"));
+				usuario.setRua(resultSet.getString("rua"));
+				usuario.setBairro(resultSet.getString("bairro"));
+				usuario.setCidade(resultSet.getString("cidade"));
+				usuario.setUf(resultSet.getString("uf"));
+				usuario.setNumero(resultSet.getString("numero"));
+
 				listar.add(usuario);
 
 			}
@@ -324,37 +444,6 @@ public class UsuarioDao {
 		}
 
 		return listar;
-
-	}
-
-	public void atualizar(UsuarioBean user) {
-
-		String query = "update usuario set nome=?, email=?, imagem=?,tipofile=? login=?, senha=?,useradmin=? sexo=? where id=?";
-
-		try {
-			PreparedStatement statment = conn.prepareStatement(query);
-			statment.setString(1, user.getNome());
-			statment.setString(2, user.getEmail());
-			statment.setString(3, user.getFotouser().split(",")[1]);
-			statment.setString(4, user.getExtensaofoto());
-			statment.setString(5, user.getLogin());
-			statment.setString(6, user.getSenha());
-			statment.setString(7, user.getPerfil());
-			statment.setString(8, user.getSexo());
-			statment.setLong(9, user.getId());
-
-			statment.executeUpdate();
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			try {
-				conn.rollback();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
 
 	}
 

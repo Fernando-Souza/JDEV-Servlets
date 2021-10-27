@@ -92,7 +92,7 @@ public class SalvarUsuario extends Util_Servlet {
 
 			if (acao.equalsIgnoreCase("editar")) {
 
-				UsuarioBean userBean = daoUser.consultar(idUser);
+				UsuarioBean userBean = daoUser.consultarUsuario(idUser);
 				RequestDispatcher view = request.getRequestDispatcher("principal/usuario.jsp");
 				request.setAttribute("user", userBean);
 				view.forward(request, response);
@@ -120,11 +120,24 @@ public class SalvarUsuario extends Util_Servlet {
 		String senha = request.getParameter("senha");
 		String perfil = request.getParameter("perfil");
 		String sexo = request.getParameter("sexo");
+		String cep = request.getParameter("cep");
+		String rua = request.getParameter("rua");
+		String bairro = request.getParameter("bairro");
+		String cidade = request.getParameter("cidade");
+		String uf = request.getParameter("uf");
+		String numero = request.getParameter("numero");
 
 		String msg = "Operação realizada com sucesso!";
 
 		UsuarioBean user = new UsuarioBean(id != null && !id.isEmpty() ? Long.parseLong(id) : null, nome, email, login,
 				senha, perfil, sexo);
+
+		user.setCep(cep);
+		user.setRua(rua);
+		user.setBairro(bairro);
+		user.setCidade(cidade);
+		user.setUf(uf);
+		user.setNumero(numero);
 
 		if (ServletFileUpload.isMultipartContent(request)) {
 
@@ -144,6 +157,8 @@ public class SalvarUsuario extends Util_Servlet {
 			user = daoUser.salvar(user, super.getUsuarioLogado(request));
 
 		} else {
+
+			daoUser.atualizar(user);
 
 			msg = "Login já cadastrado no sistema.Informe um login diferente.";
 

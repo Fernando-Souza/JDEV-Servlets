@@ -12,6 +12,12 @@ public class UsuarioBean {
 	private String fotouser;
 	private String image64;
 	private String extensaofoto;
+	private String cep;
+	private String rua;
+	private String bairro;
+	private String cidade;
+	private String uf;
+	private String numero;
 
 	public UsuarioBean() {
 
@@ -23,7 +29,8 @@ public class UsuarioBean {
 		this(id, nome, email, login, perfil, sexo);
 		this.senha = senha;
 		this.fotouser = foto;
-		;
+		this.extensaofoto = foto.split(",")[0].split(";")[0].split("/")[1];
+		this.image64 = foto.split(",")[1];
 
 	}
 
@@ -144,6 +151,54 @@ public class UsuarioBean {
 
 	public void setExtensaofoto(String extensaofoto) {
 		this.extensaofoto = extensaofoto;
+	}
+
+	public String getCep() {
+		return cep;
+	}
+
+	public void setCep(String cep) {
+		this.cep = cep;
+	}
+
+	public String getRua() {
+		return rua;
+	}
+
+	public void setRua(String rua) {
+		this.rua = rua;
+	}
+
+	public String getBairro() {
+		return bairro;
+	}
+
+	public void setBairro(String bairro) {
+		this.bairro = bairro;
+	}
+
+	public String getCidade() {
+		return cidade;
+	}
+
+	public void setCidade(String cidade) {
+		this.cidade = cidade;
+	}
+
+	public String getUf() {
+		return uf;
+	}
+
+	public void setUf(String uf) {
+		this.uf = uf;
+	}
+
+	public String getNumero() {
+		return numero;
+	}
+
+	public void setNumero(String numero) {
+		this.numero = numero;
 	}
 
 	@Override

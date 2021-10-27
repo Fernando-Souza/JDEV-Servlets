@@ -47,12 +47,12 @@
 															<div class="form-group form-default input-group mb4">
 															<div class="input-group-prepend">
 															<c:choose>
-															<c:when test="${newuser.image64 != '' && newuser.image64 !=null }">
+															<c:when test="${newuser.fotouser != '' && newuser.fotouser !=null }">
 															<a href="<%= request.getContextPath()%>/salvarUsuario?acao=downloadFoto&id=${newuser.id}">
 															<img alt="imagem user" id="fotobase64" src="${newuser.fotouser }" width="70px">
 															</a>
 															</c:when>
-															<c:when test="${newuser.image64 == '' }">
+															<c:when test="${newuser.fotouser == '' }">
 															<img alt="imagem user" id="fotobase64" src="../assets/images/avatar-1.jpg" width="70px">
 															</c:when>
 															</c:choose>																						
@@ -111,8 +111,10 @@
 																	}%>>Auxiliar</option>
 																</select> <span class="form-bar"></span> <label
 																	class="float-label">Perfil</label>
-															</div>
+															</div>									
+															
 															<div class="form-group form-default form-float-label">
+																
 																<input type="radio" name="sexo" value="Masculino"<%
 																
 																UsuarioBean user = (UsuarioBean) request.getAttribute("newuser");
@@ -137,6 +139,48 @@
 																%>>Feminino</>
 														    	
 														    </div>
+														    <div class="form-group form-default form-static-label">
+																<span class="form-bar"></span> <input onblur="pesquisaCep()" type="text"
+																	name="cep" id="cep" class="form-control"
+																	required="required" autocomplete="off"
+																	value="${newuser.cep}"> <label
+																	class="float-label">Cep</label>
+															</div>
+															<div class="form-group form-default form-static-label">
+																<span class="form-bar"></span> <input type="text"
+																	name="rua" id="rua" class="form-control"
+																	required="required" autocomplete="off"
+																	value="${newuser.rua}"> <label
+																	class="float-label">Logradouro</label>
+															</div>
+															<div class="form-group form-default form-static-label">
+																<span class="form-bar"></span> <input type="text"
+																	name="bairro" id="bairro" class="form-control"
+																	required="required" autocomplete="off"
+																	value="${newuser.bairro}"> <label
+																	class="float-label">Bairro</label>
+															</div>
+															<div class="form-group form-default form-static-label">
+																<span class="form-bar"></span> <input type="text"
+																	name="cidade" id="cidade" class="form-control"
+																	required="required" autocomplete="off"
+																	value="${newuser.cidade}"> <label
+																	class="float-label">Cidade</label>
+															</div>
+															<div class="form-group form-default form-static-label">
+																<span class="form-bar"></span> <input type="text"
+																	name="uf" id="uf" class="form-control"
+																	required="required" autocomplete="off"
+																	value="${newuser.uf}"> <label
+																	class="float-label">UF</label>
+															</div>
+															<div class="form-group form-default form-static-label">
+																<span class="form-bar"></span> <input type="text"
+																	name="numero" id="numero" class="form-control"
+																	required="required" autocomplete="off"
+																	value="${newuser.numero}"> <label
+																	class="float-label">Numero</label>
+															</div>
 
 															<div class="form-group form-default form-static-label">
 																<span class="form-bar"></span> <input type="text"
@@ -256,6 +300,31 @@
 	</div>
 
 	<script type="text/javascript">
+
+	function pesquisaCep(){
+
+		var cep = $("#cep").val();
+
+		$.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?",function(dados){
+
+			if (!("erro" in dados)) {
+				$("#cep").val(dados.cep);
+                $("#rua").val(dados.logradouro);
+                $("#bairro").val(dados.bairro);
+                $("#cidade").val(dados.localidade);
+                $("#uf").val(dados.uf);                
+                
+            } //end if.
+            else {
+                //CEP pesquisado não foi encontrado.
+                limpa_formulário_cep();
+                alert("CEP não encontrado.");
+            }
+
+			
+			});
+
+		}
 
 	function visualizarImg(fotobase64,fileFoto){
 
