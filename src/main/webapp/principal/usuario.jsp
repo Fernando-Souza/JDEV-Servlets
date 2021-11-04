@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page import="beans.UsuarioBean" %>
+<%@ page import="beans.UsuarioBean"%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -45,19 +45,27 @@
 																	class="form-bar"></span> <label class="float-label">ID</label>
 															</div>
 															<div class="form-group form-default input-group mb4">
-															<div class="input-group-prepend">
-															<c:choose>
-															<c:when test="${newuser.fotouser != '' && newuser.fotouser !=null }">
-															<a href="<%= request.getContextPath()%>/salvarUsuario?acao=downloadFoto&id=${newuser.id}">
-															<img alt="imagem user" id="fotobase64" src="${newuser.fotouser }" width="70px">
-															</a>
-															</c:when>
-															<c:when test="${newuser.fotouser == '' }">
-															<img alt="imagem user" id="fotobase64" src="../assets/images/avatar-1.jpg" width="70px">
-															</c:when>
-															</c:choose>																						
-															</div>
-															<input type="file" id="fileFoto" name="fileFoto" accept="image/*" onchange="visualizarImg('fotobase64','fileFoto')" class="form-control-file" style="margin-top: 15px; margin-left:15px">
+																<div class="input-group-prepend">
+																	<c:choose>
+																		<c:when
+																			test="${newuser.fotouser != '' && newuser.fotouser !=null }">
+																			<a
+																				href="<%= request.getContextPath()%>/salvarUsuario?acao=downloadFoto&id=${newuser.id}">
+																				<img alt="imagem user" id="fotobase64"
+																				src="${newuser.fotouser }" width="70px">
+																			</a>
+																		</c:when>
+																		<c:when test="${newuser.fotouser == '' }">
+																			<img alt="imagem user" id="fotobase64"
+																				src="../assets/images/avatar-1.jpg" width="70px">
+																		</c:when>
+																	</c:choose>
+																</div>
+																<input type="file" id="fileFoto" name="fileFoto"
+																	accept="image/*"
+																	onchange="visualizarImg('fotobase64','fileFoto')"
+																	class="form-control-file"
+																	style="margin-top: 15px; margin-left: 15px">
 															</div>
 															<div class="form-group form-default form-static-label">
 																<input type="text" name="nome" id="nome"
@@ -77,73 +85,60 @@
 																	aria-label="Default select example" name="perfil">
 																	<option disabled="disabled">[Selecione o
 																		perfil]</option>
-																	<option value="Administrador" <%
-																	
-																	UsuarioBean usuario = (UsuarioBean) request.getAttribute("newuser");
-																	
-																	if(usuario!=null && usuario.getPerfil().equals("Administrador")){
-																		
-																		out.print(" ");
-																		out.print("selected=\"selected\"");
-																		out.print(" ");
-																		
-																	}%>>Administrador</option>
-																	
-																	<option value="Secretaria" <%																
-																	
-																	
-																	if(usuario!=null && usuario.getPerfil().equals("Secretaria")){														
-																
-																		
-																		out.print(" ");
-																		out.print("selected=\"selected\"");
-																		out.print(" ");
-																		
-																	}%>>Secretária</option>
-																	<option value="Auxiliar" <%
-																	
-																	if(usuario!=null && usuario.getPerfil().equals("Auxiliar")){
-																		
-																		out.print(" ");
-																		out.print("selected =\"selected\"");
-																		out.print(" ");
-																		
-																	}%>>Auxiliar</option>
+																	<option value="Administrador"
+																		<%UsuarioBean usuario = (UsuarioBean) request.getAttribute("newuser");
+if (usuario != null && usuario.getPerfil().equals("Administrador")) {
+
+	out.print(" ");
+	out.print("selected=\"selected\"");
+	out.print(" ");
+
+}%>>Administrador</option>
+
+																	<option value="Secretaria"
+																		<%if (usuario != null && usuario.getPerfil().equals("Secretaria")) {
+
+	out.print(" ");
+	out.print("selected=\"selected\"");
+	out.print(" ");
+
+}%>>Secretária</option>
+
+																	<option value="Auxiliar"
+																		<%if (usuario != null && usuario.getPerfil().equals("Auxiliar")) {
+	out.print(" ");
+	out.print("selected =\"selected\"");
+	out.print(" ");
+
+}%>>Auxiliar</option>
 																</select> <span class="form-bar"></span> <label
 																	class="float-label">Perfil</label>
-															</div>									
-															
+															</div>
+
 															<div class="form-group form-default form-float-label">
-																
-																<input type="radio" name="sexo" value="Masculino"<%
-																
-																UsuarioBean user = (UsuarioBean) request.getAttribute("newuser");
-																
-																if(user != null && user.getSexo().equals("Masculino")){
-																	out.print(" ");
-																	out.print("checked=\"checked\"");
-																	out.print(" ");
-																}
-																
-																%>>Masculino</>
-																<input type="radio" name="sexo" value="Feminino" <%
-																
-																
-																
-																if(user != null && user.getSexo().equals("Feminino")){
-																	out.print(" ");
-																	out.print("checked=\"checked\"");
-																	out.print(" ");
-																}
-																
-																%>>Feminino</>
-														    	
-														    </div>
-														    <div class="form-group form-default form-static-label">
-																<span class="form-bar"></span> <input onblur="pesquisaCep()" type="text"
-																	name="cep" id="cep" class="form-control"
-																	required="required" autocomplete="off"
-																	value="${newuser.cep}"> <label
+
+																<input type="radio" name="sexo" value="Masculino"
+																	<%UsuarioBean user = (UsuarioBean) request.getAttribute("newuser");
+if (user != null && user.getSexo().equals("Masculino")) {
+	out.print(" ");
+	out.print("checked=\"checked\"");
+	out.print(" ");
+}%>><label>Masculino</label>
+																<input type="radio" name="sexo" value="Feminino"
+																	<%if (user != null && user.getSexo().equals("Feminino")) {
+
+	out.print(" ");
+	out.print("checked=\"checked\"");
+	out.print(" ");
+}%>><label>Feminino</label>
+
+
+															</div>
+															<div class="form-group form-default form-static-label">
+																<span class="form-bar"></span> <input
+																	onblur="pesquisaCep()" type="text" name="cep" id="cep"
+																	class="form-control" required="required"
+																	autocomplete="off" value="${newuser.cep}"> <label
 																	class="float-label">Cep</label>
 															</div>
 															<div class="form-group form-default form-static-label">
@@ -194,7 +189,7 @@
 																	name="senha" id="senha" class="form-control"
 																	required="required" autocomplete="off" value="">
 																<label class="float-label">Senha</label>
-															</div>															
+															</div>
 															<div class="card-header">
 																<button type="submit"
 																	class="btn btn-success btn-round waves-effect waves-light"
@@ -237,6 +232,19 @@
 											</table>
 
 										</div>
+										<nav aria-label="Page navigation example">
+											<ul class="pagination">
+												<%
+												int totalPagina = (int) request.getAttribute("totalPagina");
+												for (int p = 0; p < totalPagina; p++) {
+													String url = request.getContextPath() + "/salvarUsuario?acao=paginar&pagina=" + (p * 5);
+													out.print("<li class=\"page-item\"><a class=\"page-link\" href=\"" + url + "#\">" + (p + 1) + "</a></li>");
+
+												}
+												%>
+
+											</ul>
+										</nav>
 									</div>
 									<!-- Page-body end -->
 								</div>
@@ -247,107 +255,56 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div>	
 	<!-- Required Jquery -->
 	<jsp:include page="javascriptfile.jsp"></jsp:include>
-
 	<!-- Modal -->
-	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-		aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Pesquisa de
-						usuário</h5>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="input-group mb-3">
-						<input type="text" class="form-control" placeholder="Nome"
-							id="nomeBusca" aria-label="nome" aria-describedby="basic-addon2">
-						<div class="input-group-append">
-							<button class="btn btn-primary" type="button"
-								onclick="buscaUsuario();">Ir</button>
-						</div>
-					</div>
-					<div style="height: 300px; overflow: scroll">
-						<table class="table" id="tabelaresultados">
-							<thead>
-								<tr>
-									<th scope="col">ID</th>
-									<th scope="col">Nome</th>
-									<th scope="col">Ver</th>
-								</tr>
-							</thead>
-							<tbody>
-
-							</tbody>
-						</table>
-
-					</div>
-
-				</div>
-				<div class="modal-footer">
-					<span id="totalresultados" style="position: relative"></span>
-					<button type="button" class="btn btn-secondary"
-						data-dismiss="modal">Close</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
+	<jsp:include page="modal.jsp"></jsp:include>
 	<script type="text/javascript">
+		function pesquisaCep() {
 
-	function pesquisaCep(){
+			var cep = $("#cep").val();
 
-		var cep = $("#cep").val();
+			$.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?",
+					function(dados) {
 
-		$.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?",function(dados){
+						if (!("erro" in dados)) {
+							$("#cep").val(dados.cep);
+							$("#rua").val(dados.logradouro);
+							$("#bairro").val(dados.bairro);
+							$("#cidade").val(dados.localidade);
+							$("#uf").val(dados.uf);
 
-			if (!("erro" in dados)) {
-				$("#cep").val(dados.cep);
-                $("#rua").val(dados.logradouro);
-                $("#bairro").val(dados.bairro);
-                $("#cidade").val(dados.localidade);
-                $("#uf").val(dados.uf);                
-                
-            } //end if.
-            else {
-                //CEP pesquisado não foi encontrado.
-                limpa_formulário_cep();
-                alert("CEP não encontrado.");
-            }
+						} //end if.
+						else {
+							//CEP pesquisado não foi encontrado.
+							limpa_formulário_cep();
+							alert("CEP não encontrado.");
+						}
 
-			
-			});
+					});
 
 		}
 
-	function visualizarImg(fotobase64,fileFoto){
+		function visualizarImg(fotobase64, fileFoto) {
 
-		var preview = document.getElementById(fotobase64);
-		var fileUser= document.getElementById(fileFoto).files[0];
-		var reader =  new FileReader();
-		reader.onloadend =  function(){
+			var preview = document.getElementById(fotobase64);
+			var fileUser = document.getElementById(fileFoto).files[0];
+			var reader = new FileReader();
+			reader.onloadend = function() {
 
-			preview.src = reader.result;
+				preview.src = reader.result;
 
 			};
 
-			if(fileUser){
+			if (fileUser) {
 
 				reader.readAsDataURL(fileUser);
-				}else{
+			} else {
 
-					preview.src='';
+				preview.src = '';
 
-					}
-
-
-
+			}
 
 		}
 		function verEditar(id) {
@@ -446,6 +403,8 @@
 
 		}
 	</script>
+
+	
 </body>
 
 </html>

@@ -22,12 +22,12 @@ import dao.UsuarioDao;
 
 @WebServlet(urlPatterns = { "/salvarUsuario" })
 @MultipartConfig
-public class SalvarUsuario extends Util_Servlet {
+public class UsuarioServlet extends Util_Servlet {
 	private static final long serialVersionUID = 1L;
 
 	private UsuarioDao daoUser = new UsuarioDao();
 
-	public SalvarUsuario() {
+	public UsuarioServlet() {
 		super();
 
 	}
@@ -44,7 +44,8 @@ public class SalvarUsuario extends Util_Servlet {
 			if (acao.equalsIgnoreCase("deletar") && idUser != null) {
 				daoUser.delete(idUser);
 				RequestDispatcher view = request.getRequestDispatcher("principal/usuario.jsp");
-				request.setAttribute("usuarios", daoUser.listar(super.getUsuarioLogado(request)));
+				request.setAttribute("usuarios", daoUser.listar(super.getUsuarioLogado(request), 0, 5));
+				request.setAttribute("totalPagina", daoUser.numeroPaginas(super.getUsuarioLogado(request), 5));
 				request.setAttribute("msg", "Usuário removido com sucesso!");
 				view.forward(request, response);
 			} else if (acao.equalsIgnoreCase("deletarajax") && idUser != null) {
@@ -54,8 +55,8 @@ public class SalvarUsuario extends Util_Servlet {
 
 			} else if (acao.equalsIgnoreCase("buscarUserAjax") && nomeBusca != null) {
 
-				List<UsuarioBean> usuariosDadosJson = daoUser.consultaByName(nomeBusca,
-						super.getUsuarioLogado(request));
+				List<UsuarioBean> usuariosDadosJson = daoUser.consultaByName(nomeBusca, super.getUsuarioLogado(request),
+						0, 5);
 				ObjectMapper mapper = new ObjectMapper();
 				String json = mapper.writeValueAsString(usuariosDadosJson);
 				response.getWriter().write(json);
@@ -63,16 +64,19 @@ public class SalvarUsuario extends Util_Servlet {
 			} else if (acao.equalsIgnoreCase("buscarEditar") && acao != null) {
 				String id = request.getParameter("id");
 				UsuarioBean user = daoUser.consultarById(id, super.getUsuarioLogado(request));
-				List<UsuarioBean> usuariosList = daoUser.listar(super.getUsuarioLogado(request));
+				List<UsuarioBean> usuariosList = daoUser.listar(super.getUsuarioLogado(request), 0, 5);
 				request.setAttribute("userLogins", usuariosList);
 				request.setAttribute("newuser", user);
+				request.setAttribute("totalPagina", daoUser.numeroPaginas(super.getUsuarioLogado(request), 5));
+
 				request.setAttribute("msg_sucesso", "Usuário em edição");
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 
 			} else if (acao.equalsIgnoreCase("listarUser") && acao != null) {
 
-				List<UsuarioBean> usuariosList = daoUser.listar(super.getUsuarioLogado(request));
+				List<UsuarioBean> usuariosList = daoUser.listar(super.getUsuarioLogado(request), 0, 5);
 				request.setAttribute("userLogins", usuariosList);
+				request.setAttribute("totalPagina", daoUser.numeroPaginas(super.getUsuarioLogado(request), 5));
 				request.setAttribute("msg_sucesso", "Usuários carregados");
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 
@@ -83,9 +87,20 @@ public class SalvarUsuario extends Util_Servlet {
 
 					response.setHeader("Content-Disposition",
 							"attatchment;filename=arquivo." + usuario.getExtensaofoto());
-					response.getOutputStream().write(new Base64().decodeBase64(usuario.getImage64()));
+					response.getOutputStream().write(Base64.decodeBase64(usuario.getImage64()));
+
 				}
+			} else if (acao.equalsIgnoreCase("paginar") && acao != null) {
+
+				Integer offset = Integer.parseInt(request.getParameter("pagina"));
+				List<UsuarioBean> listapaginada = daoUser.ConsultaUsuarioPaginado(this.getUsuarioLogado(request),
+						offset, 5);
+				request.setAttribute("userLogins", listapaginada);
+				request.setAttribute("totalPagina", daoUser.numeroPaginas(this.getUsuarioLogado(request), 5));
+				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
+
 			} else {
+				request.setAttribute("totalPagina", daoUser.numeroPaginas(super.getUsuarioLogado(request), 5));
 				RequestDispatcher view = request.getRequestDispatcher("principal/usuario.jsp");
 				view.forward(request, response);
 			}
@@ -166,6 +181,7 @@ public class SalvarUsuario extends Util_Servlet {
 
 		request.setAttribute("newuser", user);
 		request.setAttribute("msg_sucesso", msg);
+		request.setAttribute("totalPagina", daoUser.numeroPaginas(super.getUsuarioLogado(request), 5));
 		request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 	}
 

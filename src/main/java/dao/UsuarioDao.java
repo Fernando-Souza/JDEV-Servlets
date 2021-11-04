@@ -125,14 +125,16 @@ public class UsuarioDao {
 
 	}
 
-	public List<UsuarioBean> listar(Long usuarioLogado) {
+	public List<UsuarioBean> listar(Long usuarioLogado, int offset, int n) {
 
 		List<UsuarioBean> listar = new ArrayList<>();
 
-		String query = "select * from usuario where usuario_id = ?";
+		String query = "select * from usuario where usuario_id = ? order by id offset ? fetch first ? rows only";
 		try {
 			PreparedStatement statment = conn.prepareStatement(query);
 			statment.setLong(1, usuarioLogado);
+			statment.setInt(2, offset);
+			statment.setInt(3, n);
 
 			ResultSet resultSet = statment.executeQuery();
 
@@ -170,12 +172,90 @@ public class UsuarioDao {
 
 	}
 
-	public List<UsuarioBean> listarTodos() {
+	public Integer numeroPaginas(Long usuarioLogado, int limit) {
 
-		List<UsuarioBean> listar = new ArrayList<>();
-		String query = "select * from usuario";
+		String query = "SELECT count(*) as total from usuario where usuario_id=?";
+		Double npagina = null;
 		try {
 			PreparedStatement statment = conn.prepareStatement(query);
+			statment.setLong(1, usuarioLogado);
+			ResultSet resultSet = statment.executeQuery();
+			resultSet.next();
+			Double cadastros = resultSet.getDouble("total");
+			npagina = cadastros / limit;
+			Double correcao = npagina % 2;
+
+			if (correcao > 0) {
+
+				npagina++;
+
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return npagina.intValue();
+
+	}
+
+	public List<UsuarioBean> ConsultaUsuarioPaginado(Long usuarioLogado, int offset, int limit) {
+
+		List<UsuarioBean> listar = new ArrayList<>();
+
+		String query = "select * from usuario where usuario_id = ? order by id offset ? fetch first ? row only";
+		try {
+			PreparedStatement statment = conn.prepareStatement(query);
+			statment.setLong(1, usuarioLogado);
+			statment.setInt(2, offset);
+			statment.setInt(3, limit);
+
+			ResultSet resultSet = statment.executeQuery();
+
+			while (resultSet.next()) {
+
+				Long id = resultSet.getLong("id");
+				String nome = resultSet.getString("nome");
+				String email = resultSet.getString("email");
+				String login = resultSet.getString("login");
+				String senha = resultSet.getString("senha");
+				String sexo = resultSet.getString("sexo");
+				String image64 = resultSet.getString("imagem");
+				String tipofile = resultSet.getString("tipofile");
+				String perfil = resultSet.getString("useradmin");
+
+				UsuarioBean usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipofile);
+
+				usuario.setCep(resultSet.getString("cep"));
+				usuario.setRua(resultSet.getString("rua"));
+				usuario.setBairro(resultSet.getString("bairro"));
+				usuario.setCidade(resultSet.getString("cidade"));
+				usuario.setUf(resultSet.getString("uf"));
+				usuario.setNumero(resultSet.getString("numero"));
+
+				listar.add(usuario);
+
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return listar;
+
+	}
+
+	public List<UsuarioBean> listarTodos(int offset, int n) {
+
+		List<UsuarioBean> listar = new ArrayList<>();
+		String query = "select * from usuario order by id offset ? fetch first ? rows";
+		try {
+			PreparedStatement statment = conn.prepareStatement(query);
+
+			statment.setInt(1, offset);
+			statment.setInt(2, n);
 
 			ResultSet resultSet = statment.executeQuery();
 
@@ -361,7 +441,7 @@ public class UsuarioDao {
 
 	public UsuarioBean consultarById(String id, Long userLogado) {
 
-		String query = "select * from usuario where id = ? and useradmin !='Administrador' and usuario_id=?";
+		String query = "select * from usuario where id = ? and usuario_id=?";
 		UsuarioBean usuario = null;
 
 		try {
@@ -402,16 +482,19 @@ public class UsuarioDao {
 
 	}
 
-	public List<UsuarioBean> consultaByName(String nome, Long usuarioLogado) {
+	public List<UsuarioBean> consultaByName(String nome, Long usuarioLogado, int offset, int n) {
 
 		List<UsuarioBean> listar = new ArrayList<>();
-		String query = "select * from usuario where upper(nome) like upper(?) and useradmin != 'Administrador' and usuario_id = ? ";
+		String query = "select * from usuario where upper(nome) like upper(?) and usuario_id = ? "
+				+ "order by id offset ? fetch first ? rows";
 
 		try {
 
 			PreparedStatement statment = conn.prepareStatement(query);
 			statment.setString(1, "%" + nome + "%");
 			statment.setLong(2, usuarioLogado);
+			statment.setInt(3, offset);
+			statment.setInt(4, n);
 			ResultSet resultSet = statment.executeQuery();
 
 			while (resultSet.next()) {
