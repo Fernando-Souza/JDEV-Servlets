@@ -172,6 +172,38 @@ public class UsuarioDao {
 
 	}
 
+	public int listarPaginaPaginacao(String nome, Long usuarioLogado, int limit) {
+
+		Double npagina = null;
+
+		String query = "select count(1) as total from usuario where upper(nome) like upper(?) and usuario_id = ?";
+		try {
+			PreparedStatement statment = conn.prepareStatement(query);
+			statment.setLong(2, usuarioLogado);
+			statment.setString(1, "%" + nome + "%");
+
+			ResultSet resultSet = statment.executeQuery();
+
+			resultSet.next();
+			Double cadastros = resultSet.getDouble("total");
+			npagina = cadastros / limit;
+			Double correcao = npagina % 2;
+
+			if (correcao > 0) {
+
+				npagina++;
+
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return npagina.intValue();
+
+	}
+
 	public Integer numeroPaginas(Long usuarioLogado, int limit) {
 
 		String query = "SELECT count(*) as total from usuario where usuario_id=?";
@@ -486,7 +518,7 @@ public class UsuarioDao {
 
 		List<UsuarioBean> listar = new ArrayList<>();
 		String query = "select * from usuario where upper(nome) like upper(?) and usuario_id = ? "
-				+ "order by id offset ? fetch first ? rows";
+				+ "order by id offset ? fetch first ? rows only";
 
 		try {
 

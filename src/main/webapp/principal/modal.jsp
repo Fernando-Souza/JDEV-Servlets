@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
 		aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
@@ -33,6 +34,10 @@
 							</tbody>
 						</table>
 					</div>
+					<nav aria-label="Page navigation example">
+					<ul class="pagination" id="ulPaginacaoUserAjax">
+					</ul>
+					</nav>
 				</div>
 
 				<div class="modal-footer">

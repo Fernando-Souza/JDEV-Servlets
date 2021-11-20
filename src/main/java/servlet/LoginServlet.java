@@ -60,6 +60,7 @@ public class LoginServlet extends HttpServlet {
 					request.getSession().setAttribute("isAdmin",
 							userDao.consultarUserLogado(login).isAdmin() == true ? "true" : "false");
 					request.getSession().setAttribute("perfil", userDao.consultarUserLogado(login).getPerfil());
+					request.getSession().setAttribute("imageuser", userDao.consultarUserLogado(login).getFotouser());
 
 					if (url == null || url.equals("null")) {
 

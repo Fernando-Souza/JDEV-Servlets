@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="beans.UsuarioBean"%>
 
@@ -87,30 +86,30 @@
 																		perfil]</option>
 																	<option value="Administrador"
 																		<%UsuarioBean usuario = (UsuarioBean) request.getAttribute("newuser");
-if (usuario != null && usuario.getPerfil().equals("Administrador")) {
+																		if (usuario != null && usuario.getPerfil().equals("Administrador")) {
+																		
+																			out.print(" ");
+																			out.print("selected=\"selected\"");
+																			out.print(" ");
 
-	out.print(" ");
-	out.print("selected=\"selected\"");
-	out.print(" ");
-
-}%>>Administrador</option>
+																	}%>>Administrador</option>
 
 																	<option value="Secretaria"
 																		<%if (usuario != null && usuario.getPerfil().equals("Secretaria")) {
 
-	out.print(" ");
-	out.print("selected=\"selected\"");
-	out.print(" ");
-
-}%>>Secretária</option>
+																		out.print(" ");
+																		out.print("selected=\"selected\"");
+																		out.print(" ");
+																	
+																	}%>>Secretária</option>
 
 																	<option value="Auxiliar"
 																		<%if (usuario != null && usuario.getPerfil().equals("Auxiliar")) {
-	out.print(" ");
-	out.print("selected =\"selected\"");
-	out.print(" ");
-
-}%>>Auxiliar</option>
+																		out.print(" ");
+																		out.print("selected =\"selected\"");
+																		out.print(" ");
+																	
+																	}%>>Auxiliar</option>
 																</select> <span class="form-bar"></span> <label
 																	class="float-label">Perfil</label>
 															</div>
@@ -119,19 +118,18 @@ if (usuario != null && usuario.getPerfil().equals("Administrador")) {
 
 																<input type="radio" name="sexo" value="Masculino"
 																	<%UsuarioBean user = (UsuarioBean) request.getAttribute("newuser");
-if (user != null && user.getSexo().equals("Masculino")) {
-	out.print(" ");
-	out.print("checked=\"checked\"");
-	out.print(" ");
-}%>><label>Masculino</label>
+																if (user != null && user.getSexo().equals("Masculino")) {
+																	out.print(" ");
+																	out.print("checked=\"checked\"");
+																	out.print(" ");
+																}%>><label>Masculino</label>
 																<input type="radio" name="sexo" value="Feminino"
 																	<%if (user != null && user.getSexo().equals("Feminino")) {
 
-	out.print(" ");
-	out.print("checked=\"checked\"");
-	out.print(" ");
-}%>><label>Feminino</label>
-
+																	out.print(" ");
+																	out.print("checked=\"checked\"");
+																	out.print(" ");
+																}%>><label>Feminino</label>
 
 															</div>
 															<div class="form-group form-default form-static-label">
@@ -312,6 +310,58 @@ if (user != null && user.getSexo().equals("Masculino")) {
 			var urlAction = document.getElementById('userForm').action;
 			window.location.href = urlAction + '?acao=buscarEditar&id=' + id;
 		}
+		
+				
+		function buscarUserPageAjax(url){
+			
+			var urlAction = document.getElementById('userForm').action;
+		    var nomeBusca = document.getElementById('nomeBusca').value;
+			
+			$.ajax({
+				method : "get",
+				url : urlAction,
+				data:url,
+				success : function(response,textStatus,xhr) {
+
+					var json = JSON.parse(response);
+
+					$('#tabelaresultados > tbody > tr').remove();
+					$("#ulPaginacaoUserAjax > li").remove();
+
+					for (var p = 0; p < json.length; p++) {
+
+						$('#tabelaresultados > tbody')
+								.append(
+										'<tr><td>'
+												+ json[p].id
+												+ '</td><td>'
+												+ json[p].nome
+												+ '</td><td><button onClick="verEditar('
+												+ json[p].id
+												+ ')" type="button" class="btn btn-info">Ver</button></td></tr>');
+
+					}
+
+					document.getElementById("totalresultados").textContent = "Resultados encontrados:"
+							+ json.length;
+					
+					var totalPagina = xhr.getResponseHeader("totalPagina");
+					
+					for(var p=0;p<totalPagina;p++){
+						var url= "nomeBusca="+nomeBusca+"&acao=buscarUserAjaxPage&pagina="+(p*5);
+						$("#ulPaginacaoUserAjax").append("<li class='page-item'><a class='page-link' href='#' onclick='buscarUserPageAjax(\""+url+"\")'>"+(p+1)+"</a></li>");								
+																
+					}
+				}
+
+			}).fail(
+			function(xhr, status, errorThrown) {
+				alert('Erro ao bbuscar o  usuário por nome'
+						+ xhr.responseText);
+			});
+			
+			
+		}
 
 		function buscaUsuario() {
 			var nomeBusca = document.getElementById("nomeBusca").value;
@@ -320,19 +370,17 @@ if (user != null && user.getSexo().equals("Masculino")) {
 
 				var urlAction = document.getElementById('userForm').action;
 
-				$
-						.ajax(
-								{
+				$.ajax({
 									method : "get",
 									url : urlAction,
 									data : "nomeBusca=" + nomeBusca
 											+ "&acao=buscarUserAjax",
-									success : function(response) {
+									success : function(response,textStatus,xhr) {
 
 										var json = JSON.parse(response);
 
-										$('#tabelaresultados > tbody > tr')
-												.remove();
+										$('#tabelaresultados > tbody > tr').remove();
+										$("#ulPaginacaoUserAjax > li").remove();
 
 										for (var p = 0; p < json.length; p++) {
 
@@ -348,9 +396,16 @@ if (user != null && user.getSexo().equals("Masculino")) {
 
 										}
 
-										document
-												.getElementById("totalresultados").textContent = "Resultados encontrados:"
+										document.getElementById("totalresultados").textContent = "Resultados encontrados:"
 												+ json.length;
+										
+										var totalPagina = xhr.getResponseHeader("totalPagina");
+										
+										for(var p=0;p<totalPagina;p++){
+											var url= "nomeBusca="+nomeBusca+"&acao=buscarUserAjaxPage&pagina="+(p*5);
+											$("#ulPaginacaoUserAjax").append("<li class='page-item'><a class='page-link' href='#' onclick='buscarUserPageAjax(\""+url+"\")'>"+(p+1)+"</a></li>");							
+																					
+										}
 									}
 
 								}).fail(

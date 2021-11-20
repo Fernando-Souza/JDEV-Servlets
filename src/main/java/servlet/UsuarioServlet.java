@@ -37,7 +37,6 @@ public class UsuarioServlet extends Util_Servlet {
 
 		String acao = request.getParameter("acao");
 		String idUser = request.getParameter("id");
-		String nomeBusca = request.getParameter("nomeBusca");
 
 		try {
 
@@ -53,15 +52,32 @@ public class UsuarioServlet extends Util_Servlet {
 				daoUser.delete(idUser);
 				response.getWriter().write("Excluído com sucesso!");
 
-			} else if (acao.equalsIgnoreCase("buscarUserAjax") && nomeBusca != null) {
+			} else if (acao.equalsIgnoreCase("buscarUserAjax") && !acao.isEmpty()) {
+
+				String nomeBusca = request.getParameter("nomeBusca");
 
 				List<UsuarioBean> usuariosDadosJson = daoUser.consultaByName(nomeBusca, super.getUsuarioLogado(request),
 						0, 5);
 				ObjectMapper mapper = new ObjectMapper();
 				String json = mapper.writeValueAsString(usuariosDadosJson);
+				response.addHeader("totalPagina",
+						"" + daoUser.listarPaginaPaginacao(nomeBusca, super.getUsuarioLogado(request), 5));
 				response.getWriter().write(json);
 
-			} else if (acao.equalsIgnoreCase("buscarEditar") && acao != null) {
+			} else if (acao.equalsIgnoreCase("buscarUserAjaxPage") && !acao.isEmpty() && acao != null) {
+
+				int nPagina = Integer.parseInt(request.getParameter("pagina"));
+				String nomeBusca = request.getParameter("nomeBusca");
+
+				List<UsuarioBean> usuariosDadosJson = daoUser.consultaByName(nomeBusca, super.getUsuarioLogado(request),
+						nPagina, 5);
+				ObjectMapper mapper = new ObjectMapper();
+				String json = mapper.writeValueAsString(usuariosDadosJson);
+				response.addHeader("totalPagina",
+						"" + daoUser.listarPaginaPaginacao(nomeBusca, super.getUsuarioLogado(request), 5));
+				response.getWriter().write(json);
+
+			} else if (acao.equalsIgnoreCase("buscarEditar") && !acao.isEmpty() && acao != null) {
 				String id = request.getParameter("id");
 				UsuarioBean user = daoUser.consultarById(id, super.getUsuarioLogado(request));
 				List<UsuarioBean> usuariosList = daoUser.listar(super.getUsuarioLogado(request), 0, 5);
@@ -72,7 +88,7 @@ public class UsuarioServlet extends Util_Servlet {
 				request.setAttribute("msg_sucesso", "Usuário em edição");
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 
-			} else if (acao.equalsIgnoreCase("listarUser") && acao != null) {
+			} else if (acao.equalsIgnoreCase("listarUser") && acao != null && !acao.isEmpty()) {
 
 				List<UsuarioBean> usuariosList = daoUser.listar(super.getUsuarioLogado(request), 0, 5);
 				request.setAttribute("userLogins", usuariosList);
