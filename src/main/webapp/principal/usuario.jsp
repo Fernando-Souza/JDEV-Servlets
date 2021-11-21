@@ -195,6 +195,9 @@
 																<button type="button"
 																	class="btn btn-primary btn-round ewaves-effect waves-light"
 																	onClick="limpaForm()" id="novo">Novo</button>
+																<c:if test="${newuser.id}> 0">
+																<a href="<%= request.getContextPath()%>/TelefoneServlet?iduser=${newuser.id}" class="btn btn-success btn-round waves-effect waves-light">Telefone</a>
+																</c:if>																
 																<button type="button"
 																	class="btn btn-danger  btn-round waves-effect waves-light"
 																	id="excluir" onClick="criaDeleteComAjax()">Excluir</button>
