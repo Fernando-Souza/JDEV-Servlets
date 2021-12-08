@@ -13,87 +13,87 @@ import connection.SingleConnection;
 
 public class TelefoneDao {
 
-	private Connection conn;
+    private Connection conn;
 
-	public TelefoneDao() {
+    public TelefoneDao() {
 
-		this.conn = SingleConnection.getConnection();
+	this.conn = SingleConnection.getConnection();
+    }
+
+    public void salvarTelefone(Telefone telefone) {
+
+	String sql = "INSERT INTO telefone (numero,usuario_pai_id, usuario_cad_id) VALUES (?,?,?)";
+	try {
+	    PreparedStatement ps = conn.prepareStatement(sql);
+
+	    ps.setString(1, telefone.getNumero());
+	    ps.setLong(2, telefone.getUsuario_pai_id().getId());
+	    ps.setLong(3, telefone.getUsuario_cad_id().getId());
+
+	    ps.execute();
+	    conn.commit();
+
+	} catch (SQLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
 
-	public void salvarTelefone(Telefone telefone) {
+    }
 
-		String sql = "INSERT INTO telefone (numero,usuario_pai_id, usuario_cad_id) VALUES (?,?,?)";
-		try {
-			PreparedStatement ps = conn.prepareStatement(sql);
+    public void deleteTelefone(Long id) {
 
-			ps.setString(1, telefone.getNumero());
-			ps.setLong(2, telefone.getUsuario_pai_id().getId());
-			ps.setLong(3, telefone.getUsuario_cad_id().getId());
+	String sql = "DELETE FROM telefone WHERE id=?";
+	PreparedStatement ps;
+	try {
+	    ps = conn.prepareStatement(sql);
+	    ps.setLong(1, id);
+	    ps.executeUpdate();
+	    conn.commit();
 
-			ps.execute();
-			conn.commit();
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+	} catch (SQLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
 
-	public void deleteTelefone(Long id) {
+    }
 
-		String sql = "DELETE FROM telefone WHERE id=?";
-		PreparedStatement ps;
-		try {
-			ps = conn.prepareStatement(sql);
-			ps.setLong(1, id);
-			ps.execute();
-			conn.commit();
+    public List<Telefone> listaTelefone(Long useId) {
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	List<Telefone> telefones = new ArrayList<>();
+	UsuarioDao usuario = new UsuarioDao();
 
+	String sql = "SELECT * FROM telefone WHERE usuario_pai_id=?";
+
+	try {
+	    PreparedStatement ps = conn.prepareStatement(sql);
+
+	    ps.setLong(1, useId);
+
+	    ResultSet rs = ps.executeQuery();
+
+	    while (rs.next()) {
+
+		int id = rs.getInt("id");
+		String numero = rs.getString("numero");
+		Long usuario_pai_id = rs.getLong("usuario_pai_id");
+		Long usuario_cad_id = rs.getLong("usuario_cad_id");
+
+		UsuarioBean usuariopai = usuario.consultarById(usuario_pai_id.toString(), usuario_cad_id);
+		UsuarioBean usuariocad = usuario.consultarById(usuario_cad_id.toString());
+
+		telefones.add(new Telefone(id, numero, usuariopai, usuariocad));
+
+	    }
+
+	    conn.commit();
+
+	} catch (SQLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
 
-	public List<Telefone> listaTelefone(Long useId) {
+	return telefones;
 
-		List<Telefone> telefones = new ArrayList<>();
-		UsuarioDao usuario = new UsuarioDao();
-
-		String sql = "SELECT * FROM telefone WHERE usuario_pai_id=?";
-
-		try {
-			PreparedStatement ps = conn.prepareStatement(sql);
-
-			ps.setLong(1, useId);
-
-			ResultSet rs = ps.executeQuery();
-
-			while (rs.next()) {
-
-				int id = rs.getInt("id");
-				String numero = rs.getString("numero");
-				Long usuario_pai_id = rs.getLong("usuario_pai_id");
-				Long usuario_cad_id = rs.getLong("usuario_cad_id");
-
-				UsuarioBean usuariopai = usuario.consultarById(usuario_pai_id.toString(), usuario_cad_id);
-				UsuarioBean usuariocad = usuario.consultarById(usuario_cad_id.toString());
-
-				telefones.add(new Telefone(id, numero, usuariopai, usuariocad));
-
-			}
-
-			conn.commit();
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return telefones;
-
-	}
+    }
 
 }

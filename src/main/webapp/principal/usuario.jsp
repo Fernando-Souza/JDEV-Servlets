@@ -34,176 +34,120 @@
 												<div class="card">
 													<div class="card-block">
 														<h4 class="sub-title">Cadastro de usuário</h4>
-														<form class="form-material" enctype="multipart/form-data"
-															action="<%=request.getContextPath()%>/salvarUsuario"
-															id="userForm" method="post">
+														<form class="form-material" enctype="multipart/form-data" action="<%=request.getContextPath()%>/salvarUsuario" id="userForm" method="post">
 															<input type="hidden" name="acao" id="acao" value="">
 															<div class="form-group form-default form-static-label">
-																<input type="text" name="id" id="id"
-																	class="form-control" value="${newuser.id}"> <span
-																	class="form-bar"></span> <label class="float-label">ID</label>
+																<input type="text" name="id" id="id" class="form-control" value="${newuser.id}"> <span class="form-bar"></span> <label class="float-label">ID</label>
 															</div>
 															<div class="form-group form-default input-group mb4">
 																<div class="input-group-prepend">
 																	<c:choose>
-																		<c:when
-																			test="${newuser.fotouser != '' && newuser.fotouser !=null }">
-																			<a
-																				href="<%= request.getContextPath()%>/salvarUsuario?acao=downloadFoto&id=${newuser.id}">
-																				<img alt="imagem user" id="fotobase64"
-																				src="${newuser.fotouser }" width="70px">
+																		<c:when test="${newuser.fotouser != '' && newuser.fotouser !=null }">
+																			<a href="<%= request.getContextPath()%>/salvarUsuario?acao=downloadFoto&id=${newuser.id}"> <img alt="imagem user" id="fotobase64" src="${newuser.fotouser }" width="70px">
 																			</a>
 																		</c:when>
-																		<c:when test="${newuser.fotouser == '' }">
-																			<img alt="imagem user" id="fotobase64"
-																				src="../assets/images/avatar-1.jpg" width="70px">
-																		</c:when>
+																		<c:otherwise>
+																			<img alt="imagem user" id="fotobase64" src="../assets/images/avatar-1.jpg" width="70px">
+																		</c:otherwise>
 																	</c:choose>
 																</div>
-																<input type="file" id="fileFoto" name="fileFoto"
-																	accept="image/*"
-																	onchange="visualizarImg('fotobase64','fileFoto')"
-																	class="form-control-file"
+																<input type="file" id="fileFoto" name="fileFoto" accept="image/*" onchange="visualizarImg('fotobase64','fileFoto')" class="form-control-file"
 																	style="margin-top: 15px; margin-left: 15px">
 															</div>
 															<div class="form-group form-default form-static-label">
-																<input type="text" name="nome" id="nome"
-																	class="form-control" required="required"
-																	value="${newuser.nome}"> <span class="form-bar"></span>
-																<label class="float-label">Nome</label>
+																<input type="text" name="nome" id="nome" class="form-control" required="required" value="${newuser.nome}"> <span class="form-bar"></span> <label class="float-label">Nome</label>
 															</div>
 															<div class="form-group form-default form-static-label">
-																<input type="email" name="email" id="email"
-																	class="form-control" required="required"
-																	value="${newuser.email}"> <span
-																	class="form-bar"></span> <label class="float-label">Email</label>
+																<input type="email" name="email" id="email" class="form-control" required="required" value="${newuser.email}"> <span class="form-bar"></span> <label class="float-label">Email</label>
 															</div>
 															<div class="form-group form-default form-static-label">
 
-																<select class="form-control"
-																	aria-label="Default select example" name="perfil">
-																	<option disabled="disabled">[Selecione o
-																		perfil]</option>
+																<select class="form-control" aria-label="Default select example" name="perfil">
+																	<option disabled="disabled">[Selecione o perfil]</option>
 																	<option value="Administrador"
 																		<%UsuarioBean usuario = (UsuarioBean) request.getAttribute("newuser");
-																		if (usuario != null && usuario.getPerfil().equals("Administrador")) {
-																		
-																			out.print(" ");
-																			out.print("selected=\"selected\"");
-																			out.print(" ");
+if (usuario != null && usuario.getPerfil().equals("Administrador")) {
 
-																	}%>>Administrador</option>
+	out.print(" ");
+	out.print("selected=\"selected\"");
+	out.print(" ");
 
-																	<option value="Secretaria"
-																		<%if (usuario != null && usuario.getPerfil().equals("Secretaria")) {
+}%>>Administrador</option>
 
-																		out.print(" ");
-																		out.print("selected=\"selected\"");
-																		out.print(" ");
-																	
-																	}%>>Secretária</option>
+																	<option value="Secretaria" <%if (usuario != null && usuario.getPerfil().equals("Secretaria")) {
 
-																	<option value="Auxiliar"
-																		<%if (usuario != null && usuario.getPerfil().equals("Auxiliar")) {
-																		out.print(" ");
-																		out.print("selected =\"selected\"");
-																		out.print(" ");
-																	
-																	}%>>Auxiliar</option>
-																</select> <span class="form-bar"></span> <label
-																	class="float-label">Perfil</label>
+	out.print(" ");
+	out.print("selected=\"selected\"");
+	out.print(" ");
+
+}%>>Secretária</option>
+
+																	<option value="Auxiliar" <%if (usuario != null && usuario.getPerfil().equals("Auxiliar")) {
+	out.print(" ");
+	out.print("selected =\"selected\"");
+	out.print(" ");
+
+}%>>Auxiliar</option>
+																</select> <span class="form-bar"></span> <label class="float-label">Perfil</label>
 															</div>
 
 															<div class="form-group form-default form-float-label">
 
 																<input type="radio" name="sexo" value="Masculino"
 																	<%UsuarioBean user = (UsuarioBean) request.getAttribute("newuser");
-																if (user != null && user.getSexo().equals("Masculino")) {
-																	out.print(" ");
-																	out.print("checked=\"checked\"");
-																	out.print(" ");
-																}%>><label>Masculino</label>
-																<input type="radio" name="sexo" value="Feminino"
-																	<%if (user != null && user.getSexo().equals("Feminino")) {
+if (user != null && user.getSexo().equals("Masculino")) {
+	out.print(" ");
+	out.print("checked=\"checked\"");
+	out.print(" ");
+}%>><label>Masculino</label>
+																<input type="radio" name="sexo" value="Feminino" <%if (user != null && user.getSexo().equals("Feminino")) {
 
-																	out.print(" ");
-																	out.print("checked=\"checked\"");
-																	out.print(" ");
-																}%>><label>Feminino</label>
+	out.print(" ");
+	out.print("checked=\"checked\"");
+	out.print(" ");
+}%>><label>Feminino</label>
 
 															</div>
 															<div class="form-group form-default form-static-label">
-																<span class="form-bar"></span> <input
-																	onblur="pesquisaCep()" type="text" name="cep" id="cep"
-																	class="form-control" required="required"
-																	autocomplete="off" value="${newuser.cep}"> <label
-																	class="float-label">Cep</label>
+																<span class="form-bar"></span> <input onblur="pesquisaCep()" type="text" name="cep" id="cep" class="form-control" required="required" autocomplete="off" value="${newuser.cep}">
+																<label class="float-label">Cep</label>
 															</div>
 															<div class="form-group form-default form-static-label">
-																<span class="form-bar"></span> <input type="text"
-																	name="rua" id="rua" class="form-control"
-																	required="required" autocomplete="off"
-																	value="${newuser.rua}"> <label
+																<span class="form-bar"></span> <input type="text" name="rua" id="rua" class="form-control" required="required" autocomplete="off" value="${newuser.rua}"> <label
 																	class="float-label">Logradouro</label>
 															</div>
 															<div class="form-group form-default form-static-label">
-																<span class="form-bar"></span> <input type="text"
-																	name="bairro" id="bairro" class="form-control"
-																	required="required" autocomplete="off"
-																	value="${newuser.bairro}"> <label
+																<span class="form-bar"></span> <input type="text" name="bairro" id="bairro" class="form-control" required="required" autocomplete="off" value="${newuser.bairro}"> <label
 																	class="float-label">Bairro</label>
 															</div>
 															<div class="form-group form-default form-static-label">
-																<span class="form-bar"></span> <input type="text"
-																	name="cidade" id="cidade" class="form-control"
-																	required="required" autocomplete="off"
-																	value="${newuser.cidade}"> <label
+																<span class="form-bar"></span> <input type="text" name="cidade" id="cidade" class="form-control" required="required" autocomplete="off" value="${newuser.cidade}"> <label
 																	class="float-label">Cidade</label>
 															</div>
 															<div class="form-group form-default form-static-label">
-																<span class="form-bar"></span> <input type="text"
-																	name="uf" id="uf" class="form-control"
-																	required="required" autocomplete="off"
-																	value="${newuser.uf}"> <label
+																<span class="form-bar"></span> <input type="text" name="uf" id="uf" class="form-control" required="required" autocomplete="off" value="${newuser.uf}"> <label
 																	class="float-label">UF</label>
 															</div>
 															<div class="form-group form-default form-static-label">
-																<span class="form-bar"></span> <input type="text"
-																	name="numero" id="numero" class="form-control"
-																	required="required" autocomplete="off"
-																	value="${newuser.numero}"> <label
+																<span class="form-bar"></span> <input type="text" name="numero" id="numero" class="form-control" required="required" autocomplete="off" value="${newuser.numero}"> <label
 																	class="float-label">Numero</label>
 															</div>
 
 															<div class="form-group form-default form-static-label">
-																<span class="form-bar"></span> <input type="text"
-																	name="login" id="login" class="form-control"
-																	required="required" autocomplete="off"
-																	value="${newuser.login}"> <label
+																<span class="form-bar"></span> <input type="text" name="login" id="login" class="form-control" required="required" autocomplete="off" value="${newuser.login}"> <label
 																	class="float-label">Login</label>
 															</div>
 															<div class="form-group form-default form-static-label">
-																<span class="form-bar"></span> <input type="password"
-																	name="senha" id="senha" class="form-control"
-																	required="required" autocomplete="off" value="">
-																<label class="float-label">Senha</label>
+																<span class="form-bar"></span> <input type="password" name="senha" id="senha" class="form-control" required="required" autocomplete="off" value=""> <label class="float-label">Senha</label>
 															</div>
 															<div class="card-header">
-																<button type="submit"
-																	class="btn btn-success btn-round waves-effect waves-light"
-																	id="salvar">Cadastrar</button>
-																<button type="button"
-																	class="btn btn-primary btn-round ewaves-effect waves-light"
-																	onClick="limpaForm()" id="novo">Novo</button>
-																<c:if test="${newuser.id}> 0">
-																<a href="<%= request.getContextPath()%>/TelefoneServlet?iduser=${newuser.id}" class="btn btn-success btn-round waves-effect waves-light">Telefone</a>
-																</c:if>																
-																<button type="button"
-																	class="btn btn-danger  btn-round waves-effect waves-light"
-																	id="excluir" onClick="criaDeleteComAjax()">Excluir</button>
-																<button type="button"
-																	class="btn btn-secondary btn-round" data-toggle="modal"
-																	data-target="#exampleModal">Pesquisar</button>
+																<button type="submit" class="btn btn-success btn-round waves-effect waves-light" id="salvar">Cadastrar</button>
+																<button type="button" class="btn btn-primary btn-round ewaves-effect waves-light" onClick="limpaForm()" id="novo">Novo</button>
+																<button type="button" class="btn btn-danger  btn-round waves-effect waves-light" id="excluir" onClick="criaDeleteComAjax()">Excluir</button>
+																<c:if test="${newuser.id>0}">
+																	<a href="<%= request.getContextPath()%>/TelefoneServlet?acao=listar&iduser=${newuser.id}" class="btn btn-success btn-round waves-effect waves-light">Telefone</a>
+																</c:if>
+																<button type="button" class="btn btn-secondary btn-round" data-toggle="modal" data-target="#exampleModal">Pesquisar</button>
 															</div>
 														</form>
 													</div>
@@ -225,8 +169,7 @@
 														<tr>
 															<td><c:out value="${us.id}"></c:out></td>
 															<td><c:out value="${us.nome}"></c:out></td>
-															<td><a class="btn btn-success"
-																href="<%= request.getContextPath()%>/salvarUsuario?acao=buscarEditar&id=${us.id}">Ver</a></td>
+															<td><a class="btn btn-success" href="<%= request.getContextPath()%>/salvarUsuario?acao=buscarEditar&id=${us.id}">Ver</a></td>
 														</tr>
 													</c:forEach>
 												</tbody>
@@ -256,213 +199,12 @@
 				</div>
 			</div>
 		</div>
-	</div>	
+	</div>
 	<!-- Required Jquery -->
 	<jsp:include page="javascriptfile.jsp"></jsp:include>
 	<!-- Modal -->
 	<jsp:include page="modal.jsp"></jsp:include>
-	<script type="text/javascript">
-		function pesquisaCep() {
 
-			var cep = $("#cep").val();
-
-			$.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?",
-					function(dados) {
-
-						if (!("erro" in dados)) {
-							$("#cep").val(dados.cep);
-							$("#rua").val(dados.logradouro);
-							$("#bairro").val(dados.bairro);
-							$("#cidade").val(dados.localidade);
-							$("#uf").val(dados.uf);
-
-						} //end if.
-						else {
-							//CEP pesquisado não foi encontrado.
-							limpa_formulário_cep();
-							alert("CEP não encontrado.");
-						}
-
-					});
-
-		}
-
-		function visualizarImg(fotobase64, fileFoto) {
-
-			var preview = document.getElementById(fotobase64);
-			var fileUser = document.getElementById(fileFoto).files[0];
-			var reader = new FileReader();
-			reader.onloadend = function() {
-
-				preview.src = reader.result;
-
-			};
-
-			if (fileUser) {
-
-				reader.readAsDataURL(fileUser);
-			} else {
-
-				preview.src = '';
-
-			}
-
-		}
-		function verEditar(id) {
-
-			var urlAction = document.getElementById('userForm').action;
-			window.location.href = urlAction + '?acao=buscarEditar&id=' + id;
-		}
-		
-				
-		function buscarUserPageAjax(url){
-			
-			var urlAction = document.getElementById('userForm').action;
-		    var nomeBusca = document.getElementById('nomeBusca').value;
-			
-			$.ajax({
-				method : "get",
-				url : urlAction,
-				data:url,
-				success : function(response,textStatus,xhr) {
-
-					var json = JSON.parse(response);
-
-					$('#tabelaresultados > tbody > tr').remove();
-					$("#ulPaginacaoUserAjax > li").remove();
-
-					for (var p = 0; p < json.length; p++) {
-
-						$('#tabelaresultados > tbody')
-								.append(
-										'<tr><td>'
-												+ json[p].id
-												+ '</td><td>'
-												+ json[p].nome
-												+ '</td><td><button onClick="verEditar('
-												+ json[p].id
-												+ ')" type="button" class="btn btn-info">Ver</button></td></tr>');
-
-					}
-
-					document.getElementById("totalresultados").textContent = "Resultados encontrados:"
-							+ json.length;
-					
-					var totalPagina = xhr.getResponseHeader("totalPagina");
-					
-					for(var p=0;p<totalPagina;p++){
-						var url= "nomeBusca="+nomeBusca+"&acao=buscarUserAjaxPage&pagina="+(p*5);
-						$("#ulPaginacaoUserAjax").append("<li class='page-item'><a class='page-link' href='#' onclick='buscarUserPageAjax(\""+url+"\")'>"+(p+1)+"</a></li>");								
-																
-					}
-				}
-
-			}).fail(
-			function(xhr, status, errorThrown) {
-				alert('Erro ao bbuscar o  usuário por nome'
-						+ xhr.responseText);
-			});
-			
-			
-		}
-
-		function buscaUsuario() {
-			var nomeBusca = document.getElementById("nomeBusca").value;
-
-			if (nomeBusca != null && nomeBusca != '' && nomeBusca.trim() != '') {
-
-				var urlAction = document.getElementById('userForm').action;
-
-				$.ajax({
-									method : "get",
-									url : urlAction,
-									data : "nomeBusca=" + nomeBusca
-											+ "&acao=buscarUserAjax",
-									success : function(response,textStatus,xhr) {
-
-										var json = JSON.parse(response);
-
-										$('#tabelaresultados > tbody > tr').remove();
-										$("#ulPaginacaoUserAjax > li").remove();
-
-										for (var p = 0; p < json.length; p++) {
-
-											$('#tabelaresultados > tbody')
-													.append(
-															'<tr><td>'
-																	+ json[p].id
-																	+ '</td><td>'
-																	+ json[p].nome
-																	+ '</td><td><button onClick="verEditar('
-																	+ json[p].id
-																	+ ')" type="button" class="btn btn-info">Ver</button></td></tr>');
-
-										}
-
-										document.getElementById("totalresultados").textContent = "Resultados encontrados:"
-												+ json.length;
-										
-										var totalPagina = xhr.getResponseHeader("totalPagina");
-										
-										for(var p=0;p<totalPagina;p++){
-											var url= "nomeBusca="+nomeBusca+"&acao=buscarUserAjaxPage&pagina="+(p*5);
-											$("#ulPaginacaoUserAjax").append("<li class='page-item'><a class='page-link' href='#' onclick='buscarUserPageAjax(\""+url+"\")'>"+(p+1)+"</a></li>");							
-																					
-										}
-									}
-
-								}).fail(
-								function(xhr, status, errorThrown) {
-									alert('Erro ao bbuscar o  usuário por nome'
-											+ xhr.responseText);
-								});
-
-			}
-
-		}
-
-		function limpaForm() {
-
-			var elementos = document.getElementById("userForm").elements;
-			for (p = 0; p < elementos.length; p++) {
-
-				elementos[p].value = "";
-
-			}
-		}
-
-		function criarDelete() {
-
-			if (confirm("Deseja realmente excluir os dados?")) {
-				document.getElementById("userForm").method = 'get';
-				document.getElementById("acao").value = 'deletar';
-				document.getElementById("userForm").submit();
-			}
-		}
-
-		function criaDeleteComAjax() {
-			if (confirm("Deseja realmente excluir os dados?")) {
-				var urlAction = document.getElementById('userForm').action;
-				var idUser = document.getElementById('id').value;
-				$.ajax({
-					method : "get",
-					url : urlAction,
-					data : "id=" + idUser + "&acao=deletarajax",
-					success : function(response) {
-						limpaForm();
-						alert(response)
-					}
-
-				}).fail(function(xhr, status, errorThrown) {
-					alert('Erro ao deletar usuário por id' + xhr.responseText);
-				});
-
-			}
-
-		}
-	</script>
-
-	
 </body>
 
 </html>
