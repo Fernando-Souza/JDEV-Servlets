@@ -3,7 +3,7 @@
 <%@ page import="beans.UsuarioBean"%>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <jsp:include page="head.jsp"></jsp:include>
 
 <body>
@@ -56,6 +56,9 @@
 															</div>
 															<div class="form-group form-default form-static-label">
 																<input type="text" name="nome" id="nome" class="form-control" required="required" value="${newuser.nome}"> <span class="form-bar"></span> <label class="float-label">Nome</label>
+															</div>
+															<div class="form-group form-default form-static-label">
+																<input type="text"  name="nascimento" id="nascimento" class="form-control" required="required" value="${newuser.nascimento}"> <span class="form-bar"></span> <label class="float-label">Data de Nascimento</label>
 															</div>
 															<div class="form-group form-default form-static-label">
 																<input type="email" name="email" id="email" class="form-control" required="required" value="${newuser.email}"> <span class="form-bar"></span> <label class="float-label">Email</label>

@@ -1,9 +1,12 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,606 +15,657 @@ import connection.SingleConnection;
 
 public class UsuarioDao {
 
-	private Connection conn;
+    private Connection conn;
 
-	public UsuarioDao() {
+    public UsuarioDao() {
 
-		conn = SingleConnection.getConnection();
-	}
+	conn = SingleConnection.getConnection();
+    }
 
-	public UsuarioBean salvar(UsuarioBean usuario, Long usuarioLogado) {
+    public UsuarioBean salvar(UsuarioBean usuario, Long usuarioLogado) {
 
-		String query;
-		PreparedStatement insert;
+	String query;
+	PreparedStatement insert;
 
-		try {
+	try {
 
-			if (consultarUsuario(usuario.getLogin()) == null) {
+	    if (consultarUsuario(usuario.getLogin()) == null) {
 
-				query = "insert into usuario (login,senha,nome, email,imagem,tipofile,useradmin,usuario_id,sexo,cep,rua,bairro,cidade,uf,numero) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-				insert = conn.prepareStatement(query);
+		query = "insert into usuario (login,senha,nome, email,imagem,tipofile,useradmin,usuario_id,sexo,cep,rua,bairro,cidade,uf,numero,datanascimento) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		insert = conn.prepareStatement(query);
 
-				insert.setString(1, usuario.getLogin());
-				insert.setString(2, usuario.getSenha());
-				insert.setString(3, usuario.getNome());
-				insert.setString(4, usuario.getEmail());
-				insert.setString(5, usuario.getImage64());
-				insert.setString(6, usuario.getExtensaofoto());
-				insert.setString(7, usuario.getPerfil());
-				insert.setLong(8, usuarioLogado);
-				insert.setString(9, usuario.getSexo());
-				insert.setString(10, usuario.getCep());
-				insert.setString(11, usuario.getRua());
-				insert.setString(12, usuario.getBairro());
-				insert.setString(13, usuario.getCidade());
-				insert.setString(14, usuario.getUf());
-				insert.setString(15, usuario.getNumero());
+		insert.setString(1, usuario.getLogin());
+		insert.setString(2, usuario.getSenha());
+		insert.setString(3, usuario.getNome());
+		insert.setString(4, usuario.getEmail());
+		insert.setString(5, usuario.getImage64());
+		insert.setString(6, usuario.getExtensaofoto());
+		insert.setString(7, usuario.getPerfil());
+		insert.setLong(8, usuarioLogado);
+		insert.setString(9, usuario.getSexo());
+		insert.setString(10, usuario.getCep());
+		insert.setString(11, usuario.getRua());
+		insert.setString(12, usuario.getBairro());
+		insert.setString(13, usuario.getCidade());
+		insert.setString(14, usuario.getUf());
+		insert.setString(15, usuario.getNumero());
+		insert.setDate(16, Date.valueOf(usuario.getNascimento()));
 
-				insert.execute();
-				conn.commit();
+		insert.execute();
+		conn.commit();
 
-				if (usuario.getImage64() != null && !usuario.getImage64().isEmpty()) {
+		if (usuario.getImage64() != null && !usuario.getImage64().isEmpty()) {
 
-					query = "update usuario set imagem=?,tipofile=? where id =?";
-					insert = conn.prepareStatement(query);
+		    query = "update usuario set imagem=?,tipofile=? where id =?";
+		    insert = conn.prepareStatement(query);
 
-					insert.setString(1, usuario.getImage64());
-					insert.setString(2, usuario.getExtensaofoto());
-					insert.setLong(3, consultarUsuario(usuario.getLogin()).getId());
+		    insert.setString(1, usuario.getImage64());
+		    insert.setString(2, usuario.getExtensaofoto());
+		    insert.setLong(3, consultarUsuario(usuario.getLogin()).getId());
 
-					insert.executeUpdate();
-					conn.commit();
-
-				}
-
-			} else {
-
-				atualizar(usuario);
-
-			}
-
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-
-			try {
-				conn.rollback();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+		    insert.executeUpdate();
+		    conn.commit();
 
 		}
 
-		return this.consultarUsuario(usuario.getLogin());
-	}
+	    } else {
 
-	public void atualizar(UsuarioBean user) {
+		atualizar(usuario);
 
-		String query = "update usuario set nome=?, email=?, imagem=?,tipofile=?,login=?, senha=?,"
-				+ "useradmin=?, sexo=?,cep=?,rua=?,bairro=?,cidade=?,uf=?,numero=? where id=?";
+	    }
 
-		try {
-			PreparedStatement statment = conn.prepareStatement(query);
-			statment.setString(1, user.getNome());
-			statment.setString(2, user.getEmail());
-			statment.setString(3, user.getImage64());
-			statment.setString(4, user.getExtensaofoto());
-			statment.setString(5, user.getLogin());
-			statment.setString(6, user.getSenha());
-			statment.setString(7, user.getPerfil());
-			statment.setString(8, user.getSexo());
-			statment.setString(9, user.getCep());
-			statment.setString(10, user.getRua());
-			statment.setString(11, user.getBairro());
-			statment.setString(12, user.getCidade());
-			statment.setString(13, user.getUf());
-			statment.setString(14, user.getNumero());
-			statment.setLong(15, user.getId());
+	} catch (SQLException e) {
 
-			statment.executeUpdate();
-			conn.commit();
+	    e.printStackTrace();
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			try {
-				conn.rollback();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
+	    try {
+		conn.rollback();
+	    } catch (SQLException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	    }
 
 	}
 
-	public List<UsuarioBean> listar(Long usuarioLogado, int offset, int n) {
+	return this.consultarUsuario(usuario.getLogin());
+    }
 
-		List<UsuarioBean> listar = new ArrayList<>();
+    public void atualizar(UsuarioBean user) {
 
-		String query = "select * from usuario where usuario_id = ? order by id offset ? fetch first ? rows only";
-		try {
-			PreparedStatement statment = conn.prepareStatement(query);
-			statment.setLong(1, usuarioLogado);
-			statment.setInt(2, offset);
-			statment.setInt(3, n);
+	String query = "update usuario set nome=?, email=?, imagem=?,tipofile=?,login=?, senha=?,"
+		+ "useradmin=?, sexo=?,cep=?,rua=?,bairro=?,cidade=?,uf=?,numero=?,datanascimento=? where id=?";
 
-			ResultSet resultSet = statment.executeQuery();
+	try {
+	    PreparedStatement statment = conn.prepareStatement(query);
+	    statment.setString(1, user.getNome());
+	    statment.setString(2, user.getEmail());
+	    statment.setString(3, user.getImage64());
+	    statment.setString(4, user.getExtensaofoto());
+	    statment.setString(5, user.getLogin());
+	    statment.setString(6, user.getSenha());
+	    statment.setString(7, user.getPerfil());
+	    statment.setString(8, user.getSexo());
+	    statment.setString(9, user.getCep());
+	    statment.setString(10, user.getRua());
+	    statment.setString(11, user.getBairro());
+	    statment.setString(12, user.getCidade());
+	    statment.setString(13, user.getUf());
+	    statment.setString(14, user.getNumero());
+	    statment.setDate(15, Date.valueOf(user.getNascimento()));
+	    statment.setLong(16, user.getId());
 
-			while (resultSet.next()) {
+	    statment.executeUpdate();
+	    conn.commit();
 
-				Long id = resultSet.getLong("id");
-				String nome = resultSet.getString("nome");
-				String email = resultSet.getString("email");
-				String login = resultSet.getString("login");
-				String senha = resultSet.getString("senha");
-				String sexo = resultSet.getString("sexo");
-				String image64 = resultSet.getString("imagem");
-				String tipofile = resultSet.getString("tipofile");
-				String perfil = resultSet.getString("useradmin");
-
-				UsuarioBean usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipofile);
-
-				usuario.setCep(resultSet.getString("cep"));
-				usuario.setRua(resultSet.getString("rua"));
-				usuario.setBairro(resultSet.getString("bairro"));
-				usuario.setCidade(resultSet.getString("cidade"));
-				usuario.setUf(resultSet.getString("uf"));
-				usuario.setNumero(resultSet.getString("numero"));
-
-				listar.add(usuario);
-
-			}
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return listar;
-
+	} catch (SQLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	    try {
+		conn.rollback();
+	    } catch (SQLException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	    }
 	}
 
-	public int listarPaginaPaginacao(String nome, Long usuarioLogado, int limit) {
+    }
 
-		Double npagina = null;
+    public List<UsuarioBean> listar(Long usuarioLogado, int offset, int n) {
 
-		String query = "select count(1) as total from usuario where upper(nome) like upper(?) and usuario_id = ?";
-		try {
-			PreparedStatement statment = conn.prepareStatement(query);
-			statment.setLong(2, usuarioLogado);
-			statment.setString(1, "%" + nome + "%");
+	List<UsuarioBean> listar = new ArrayList<>();
 
-			ResultSet resultSet = statment.executeQuery();
+	String query = "select * from usuario where usuario_id = ? order by id offset ? fetch first ? rows only";
+	try {
+	    PreparedStatement statment = conn.prepareStatement(query);
+	    statment.setLong(1, usuarioLogado);
+	    statment.setInt(2, offset);
+	    statment.setInt(3, n);
 
-			resultSet.next();
-			Double cadastros = resultSet.getDouble("total");
-			npagina = cadastros / limit;
-			Double correcao = npagina % 2;
+	    ResultSet resultSet = statment.executeQuery();
 
-			if (correcao > 0) {
+	    while (resultSet.next()) {
 
-				npagina++;
+		Long id = resultSet.getLong("id");
+		String nome = resultSet.getString("nome");
+		String email = resultSet.getString("email");
+		String login = resultSet.getString("login");
+		String senha = resultSet.getString("senha");
+		String sexo = resultSet.getString("sexo");
+		String image64 = resultSet.getString("imagem");
+		String tipofile = resultSet.getString("tipofile");
+		String perfil = resultSet.getString("useradmin");
 
-			}
+		UsuarioBean usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipofile);
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		usuario.setCep(resultSet.getString("cep"));
+		usuario.setRua(resultSet.getString("rua"));
+		usuario.setBairro(resultSet.getString("bairro"));
+		usuario.setCidade(resultSet.getString("cidade"));
+		usuario.setUf(resultSet.getString("uf"));
+		usuario.setNumero(resultSet.getString("numero"));
 
-		return npagina.intValue();
+		listar.add(usuario);
 
+	    }
+
+	} catch (SQLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
 
-	public Integer numeroPaginas(Long usuarioLogado, int limit) {
+	return listar;
 
-		String query = "SELECT count(*) as total from usuario where usuario_id=?";
-		Double npagina = null;
-		try {
-			PreparedStatement statment = conn.prepareStatement(query);
-			statment.setLong(1, usuarioLogado);
-			ResultSet resultSet = statment.executeQuery();
-			resultSet.next();
-			Double cadastros = resultSet.getDouble("total");
-			npagina = cadastros / limit;
-			Double correcao = npagina % 2;
+    }
 
-			if (correcao > 0) {
+    public List<UsuarioBean> listarUsuarios(Long usuarioLogado) {
 
-				npagina++;
+	List<UsuarioBean> listar = new ArrayList<>();
 
-			}
+	String query = "select * from usuario where usuario_id = ?";
+	try {
+	    PreparedStatement statment = conn.prepareStatement(query);
+	    statment.setLong(1, usuarioLogado);
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	    ResultSet resultSet = statment.executeQuery();
 
-		return npagina.intValue();
+	    while (resultSet.next()) {
 
+		Long id = resultSet.getLong("id");
+		String nome = resultSet.getString("nome");
+		String email = resultSet.getString("email");
+		String login = resultSet.getString("login");
+		String senha = resultSet.getString("senha");
+		String sexo = resultSet.getString("sexo");
+		String image64 = resultSet.getString("imagem");
+		String tipofile = resultSet.getString("tipofile");
+		String perfil = resultSet.getString("useradmin");
+
+		UsuarioBean usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipofile);
+
+		usuario.setCep(resultSet.getString("cep"));
+		usuario.setRua(resultSet.getString("rua"));
+		usuario.setBairro(resultSet.getString("bairro"));
+		usuario.setCidade(resultSet.getString("cidade"));
+		usuario.setUf(resultSet.getString("uf"));
+		usuario.setNumero(resultSet.getString("numero"));
+		usuario.setNascimento(resultSet.getDate("datanascimento")==null?null:resultSet.getDate("datanascimento").toLocalDate());
+
+		listar.add(usuario);
+
+	    }
+
+	} catch (SQLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
 
-	public List<UsuarioBean> ConsultaUsuarioPaginado(Long usuarioLogado, int offset, int limit) {
+	return listar;
 
-		List<UsuarioBean> listar = new ArrayList<>();
+    }
 
-		String query = "select * from usuario where usuario_id = ? order by id offset ? fetch first ? row only";
-		try {
-			PreparedStatement statment = conn.prepareStatement(query);
-			statment.setLong(1, usuarioLogado);
-			statment.setInt(2, offset);
-			statment.setInt(3, limit);
+    public int listarPaginaPaginacao(String nome, Long usuarioLogado, int limit) {
 
-			ResultSet resultSet = statment.executeQuery();
+	Double npagina = null;
 
-			while (resultSet.next()) {
+	String query = "select count(1) as total from usuario where upper(nome) like upper(?) and usuario_id = ?";
+	try {
+	    PreparedStatement statment = conn.prepareStatement(query);
+	    statment.setLong(2, usuarioLogado);
+	    statment.setString(1, "%" + nome + "%");
 
-				Long id = resultSet.getLong("id");
-				String nome = resultSet.getString("nome");
-				String email = resultSet.getString("email");
-				String login = resultSet.getString("login");
-				String senha = resultSet.getString("senha");
-				String sexo = resultSet.getString("sexo");
-				String image64 = resultSet.getString("imagem");
-				String tipofile = resultSet.getString("tipofile");
-				String perfil = resultSet.getString("useradmin");
+	    ResultSet resultSet = statment.executeQuery();
 
-				UsuarioBean usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipofile);
+	    resultSet.next();
+	    Double cadastros = resultSet.getDouble("total");
+	    npagina = cadastros / limit;
+	    Double correcao = npagina % 2;
 
-				usuario.setCep(resultSet.getString("cep"));
-				usuario.setRua(resultSet.getString("rua"));
-				usuario.setBairro(resultSet.getString("bairro"));
-				usuario.setCidade(resultSet.getString("cidade"));
-				usuario.setUf(resultSet.getString("uf"));
-				usuario.setNumero(resultSet.getString("numero"));
+	    if (correcao > 0) {
 
-				listar.add(usuario);
+		npagina++;
 
-			}
+	    }
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return listar;
-
+	} catch (SQLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
 
-	public List<UsuarioBean> listarTodos(int offset, int n) {
+	return npagina.intValue();
 
-		List<UsuarioBean> listar = new ArrayList<>();
-		String query = "select * from usuario order by id offset ? fetch first ? rows";
-		try {
-			PreparedStatement statment = conn.prepareStatement(query);
+    }
 
-			statment.setInt(1, offset);
-			statment.setInt(2, n);
+    public Integer numeroPaginas(Long usuarioLogado, int limit) {
 
-			ResultSet resultSet = statment.executeQuery();
+	String query = "SELECT count(*) as total from usuario where usuario_id=?";
+	Double npagina = null;
+	try {
+	    PreparedStatement statment = conn.prepareStatement(query);
+	    statment.setLong(1, usuarioLogado);
+	    ResultSet resultSet = statment.executeQuery();
+	    resultSet.next();
+	    Double cadastros = resultSet.getDouble("total");
+	    npagina = cadastros / limit;
+	    Double correcao = npagina % 2;
 
-			while (resultSet.next()) {
+	    if (correcao > 0) {
 
-				Long id = resultSet.getLong("id");
-				String nome = resultSet.getString("nome");
-				String email = resultSet.getString("email");
-				String login = resultSet.getString("login");
-				String senha = resultSet.getString("senha");
-				String sexo = resultSet.getString("sexo");
-				String image64 = resultSet.getString("imagem");
-				String tipoFile = resultSet.getString("tipofile");
-				String perfil = resultSet.getString("useradmin");
+		npagina++;
 
-				UsuarioBean usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipoFile);
+	    }
 
-				usuario.setCep(resultSet.getString("cep"));
-				usuario.setRua(resultSet.getString("rua"));
-				usuario.setBairro(resultSet.getString("bairro"));
-				usuario.setCidade(resultSet.getString("cidade"));
-				usuario.setUf(resultSet.getString("uf"));
-				usuario.setNumero(resultSet.getString("numero"));
-
-				listar.add(usuario);
-
-			}
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return listar;
-
+	} catch (SQLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
 
-	public void delete(String id) {
+	return npagina.intValue();
 
-		String sql = "delete from usuario where id=?";
-		try {
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setLong(1, Long.parseLong(id));
+    }
 
-			ps.execute();
-			conn.commit();
+    public List<UsuarioBean> ConsultaUsuarioPaginado(Long usuarioLogado, int offset, int limit) {
 
-		} catch (SQLException e) {
+	List<UsuarioBean> listar = new ArrayList<>();
 
-			e.printStackTrace();
-			try {
-				conn.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		}
+	String query = "select * from usuario where usuario_id = ? order by id offset ? fetch first ? row only";
+	try {
+	    PreparedStatement statment = conn.prepareStatement(query);
+	    statment.setLong(1, usuarioLogado);
+	    statment.setInt(2, offset);
+	    statment.setInt(3, limit);
 
+	    ResultSet resultSet = statment.executeQuery();
+
+	    while (resultSet.next()) {
+
+		Long id = resultSet.getLong("id");
+		String nome = resultSet.getString("nome");
+		String email = resultSet.getString("email");
+		String login = resultSet.getString("login");
+		String senha = resultSet.getString("senha");
+		String sexo = resultSet.getString("sexo");
+		String image64 = resultSet.getString("imagem");
+		String tipofile = resultSet.getString("tipofile");
+		String perfil = resultSet.getString("useradmin");
+
+		UsuarioBean usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipofile);
+
+		usuario.setCep(resultSet.getString("cep"));
+		usuario.setRua(resultSet.getString("rua"));
+		usuario.setBairro(resultSet.getString("bairro"));
+		usuario.setCidade(resultSet.getString("cidade"));
+		usuario.setUf(resultSet.getString("uf"));
+		usuario.setNumero(resultSet.getString("numero"));
+
+		listar.add(usuario);
+
+	    }
+
+	} catch (SQLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
 
-	public UsuarioBean consultarUsuario(String login) {
+	return listar;
 
-		String query = "select * from usuario where upper(login) = upper(?)";
-		UsuarioBean usuario = null;
+    }
 
-		try {
-			PreparedStatement statment = conn.prepareStatement(query);
-			statment.setString(1, login);
-			ResultSet resultSet = statment.executeQuery();
+    public List<UsuarioBean> listarTodos(int offset, int n) {
 
-			if (resultSet.next()) {
+	List<UsuarioBean> listar = new ArrayList<>();
+	String query = "select * from usuario order by id offset ? fetch first ? rows";
+	try {
+	    PreparedStatement statment = conn.prepareStatement(query);
 
-				Long id = resultSet.getLong("id");
-				String nome = resultSet.getString("nome");
-				String email = resultSet.getString("email");
-				String senha = resultSet.getString("senha");
-				String sexo = resultSet.getString("sexo");
-				String image64 = resultSet.getString("imagem");
-				String tipoFile = resultSet.getString("tipofile");
-				String perfil = resultSet.getString("useradmin");
+	    statment.setInt(1, offset);
+	    statment.setInt(2, n);
 
-				usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipoFile);
+	    ResultSet resultSet = statment.executeQuery();
 
-				usuario.setCep(resultSet.getString("cep"));
-				usuario.setRua(resultSet.getString("rua"));
-				usuario.setBairro(resultSet.getString("bairro"));
-				usuario.setCidade(resultSet.getString("cidade"));
-				usuario.setUf(resultSet.getString("uf"));
-				usuario.setNumero(resultSet.getString("numero"));
+	    while (resultSet.next()) {
 
-			}
+		Long id = resultSet.getLong("id");
+		String nome = resultSet.getString("nome");
+		String email = resultSet.getString("email");
+		String login = resultSet.getString("login");
+		String senha = resultSet.getString("senha");
+		String sexo = resultSet.getString("sexo");
+		String image64 = resultSet.getString("imagem");
+		String tipoFile = resultSet.getString("tipofile");
+		String perfil = resultSet.getString("useradmin");
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		UsuarioBean usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipoFile);
 
-		return usuario;
+		usuario.setCep(resultSet.getString("cep"));
+		usuario.setRua(resultSet.getString("rua"));
+		usuario.setBairro(resultSet.getString("bairro"));
+		usuario.setCidade(resultSet.getString("cidade"));
+		usuario.setUf(resultSet.getString("uf"));
+		usuario.setNumero(resultSet.getString("numero"));
 
+		listar.add(usuario);
+
+	    }
+
+	} catch (SQLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
 
-	public UsuarioBean consultarUserLogado(String login) {
+	return listar;
 
-		String query = "select * from usuario where upper(login) = upper(?)";
-		UsuarioBean usuario = null;
+    }
 
-		try {
-			PreparedStatement statment = conn.prepareStatement(query);
-			statment.setString(1, login);
-			ResultSet resultSet = statment.executeQuery();
+    public void delete(String id) {
 
-			if (resultSet.next()) {
+	String sql = "delete from usuario where id=?";
+	try {
+	    PreparedStatement ps = conn.prepareStatement(sql);
+	    ps.setLong(1, Long.parseLong(id));
 
-				Long id = resultSet.getLong("id");
-				String nome = resultSet.getString("nome");
-				String email = resultSet.getString("email");
-				String senha = resultSet.getString("senha");
-				String sexo = resultSet.getString("sexo");
-				String image64 = resultSet.getString("imagem");
-				String tipoFile = resultSet.getString("tipofile");
-				String perfil = resultSet.getString("useradmin");
+	    ps.execute();
+	    conn.commit();
 
-				usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipoFile);
+	} catch (SQLException e) {
 
-				usuario.setCep(resultSet.getString("cep"));
-				usuario.setRua(resultSet.getString("rua"));
-				usuario.setBairro(resultSet.getString("bairro"));
-				usuario.setCidade(resultSet.getString("cidade"));
-				usuario.setUf(resultSet.getString("uf"));
-				usuario.setNumero(resultSet.getString("numero"));
-
-			}
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return usuario;
-
+	    e.printStackTrace();
+	    try {
+		conn.rollback();
+	    } catch (SQLException e1) {
+		e1.printStackTrace();
+	    }
 	}
 
-	public UsuarioBean consultarById(String id) {
+    }
 
-		String query = "select * from usuario where id = ?";
-		UsuarioBean usuario = null;
+    public UsuarioBean consultarUsuario(String login) {
 
-		try {
-			PreparedStatement statment = conn.prepareStatement(query);
-			statment.setLong(1, Long.parseLong(id));
-			ResultSet resultSet = statment.executeQuery();
+	String query = "select * from usuario where upper(login) = upper(?)";
+	UsuarioBean usuario = null;
 
-			if (resultSet.next()) {
+	try {
+	    PreparedStatement statment = conn.prepareStatement(query);
+	    statment.setString(1, login);
+	    ResultSet resultSet = statment.executeQuery();
 
-				String login = resultSet.getString("login");
-				String nome = resultSet.getString("nome");
-				String email = resultSet.getString("email");
-				String senha = resultSet.getString("senha");
-				String sexo = resultSet.getString("sexo");
-				String image64 = resultSet.getString("imagem");
-				String tipoFile = resultSet.getString("tipofile");
-				String perfil = resultSet.getString("useradmin");
+	    if (resultSet.next()) {
 
-				usuario = new UsuarioBean(Long.parseLong(id), nome, email, login, senha, perfil, sexo, image64,
-						tipoFile);
+		Long id = resultSet.getLong("id");
+		String nome = resultSet.getString("nome");
+		String email = resultSet.getString("email");
+		String senha = resultSet.getString("senha");
+		String sexo = resultSet.getString("sexo");
+		String image64 = resultSet.getString("imagem");
+		String tipoFile = resultSet.getString("tipofile");
+		String perfil = resultSet.getString("useradmin");
 
-				usuario.setCep(resultSet.getString("cep"));
-				usuario.setRua(resultSet.getString("rua"));
-				usuario.setBairro(resultSet.getString("bairro"));
-				usuario.setCidade(resultSet.getString("cidade"));
-				usuario.setUf(resultSet.getString("uf"));
-				usuario.setNumero(resultSet.getString("numero"));
+		usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipoFile);
 
-			}
+		usuario.setCep(resultSet.getString("cep"));
+		usuario.setRua(resultSet.getString("rua"));
+		usuario.setBairro(resultSet.getString("bairro"));
+		usuario.setCidade(resultSet.getString("cidade"));
+		usuario.setUf(resultSet.getString("uf"));
+		usuario.setNumero(resultSet.getString("numero"));
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	    }
 
-		return usuario;
-
+	} catch (SQLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
 
-	public UsuarioBean consultarById(String id, Long userLogado) {
+	return usuario;
 
-		String query = "select * from usuario where id = ? and usuario_id=?";
-		UsuarioBean usuario = null;
+    }
 
-		try {
-			PreparedStatement statment = conn.prepareStatement(query);
-			statment.setLong(1, Long.parseLong(id));
-			statment.setLong(2, userLogado);
+    public UsuarioBean consultarUserLogado(String login) {
 
-			ResultSet resultSet = statment.executeQuery();
+	String query = "select * from usuario where upper(login) = upper(?)";
+	UsuarioBean usuario = null;
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-			if (resultSet.next()) {
+	try {
+	    PreparedStatement statment = conn.prepareStatement(query);
+	    statment.setString(1, login);
+	    ResultSet resultSet = statment.executeQuery();
 
-				String login = resultSet.getString("login");
-				String nome = resultSet.getString("nome");
-				String email = resultSet.getString("email");
-				String senha = resultSet.getString("senha");
-				String sexo = resultSet.getString("sexo");
-				String image64 = resultSet.getString("imagem");
-				String tipoFile = resultSet.getString("tipofile");
-				String perfil = resultSet.getString("useradmin");
+	    if (resultSet.next()) {
 
-				usuario = new UsuarioBean(Long.parseLong(id), nome, email, login, senha, perfil, sexo, image64,
-						tipoFile);
+		Long id = resultSet.getLong("id");
+		String nome = resultSet.getString("nome");
+		String email = resultSet.getString("email");
+		String senha = resultSet.getString("senha");
+		String sexo = resultSet.getString("sexo");
+		String image64 = resultSet.getString("imagem");
+		String tipoFile = resultSet.getString("tipofile");
+		String perfil = resultSet.getString("useradmin");
 
-				usuario.setCep(resultSet.getString("cep"));
-				usuario.setRua(resultSet.getString("rua"));
-				usuario.setBairro(resultSet.getString("bairro"));
-				usuario.setCidade(resultSet.getString("cidade"));
-				usuario.setUf(resultSet.getString("uf"));
-				usuario.setNumero(resultSet.getString("numero"));
-			}
+		usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipoFile);
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		usuario.setCep(resultSet.getString("cep"));
+		usuario.setRua(resultSet.getString("rua"));
+		usuario.setBairro(resultSet.getString("bairro"));
+		usuario.setCidade(resultSet.getString("cidade"));
+		usuario.setUf(resultSet.getString("uf"));
+		usuario.setNumero(resultSet.getString("numero"));
+		usuario.setNascimento(resultSet.getDate("datanascimento") == null ? null
+			: LocalDate.parse(resultSet.getDate("datanascimento").toString(), formatter));
 
-		return usuario;
+	    }
 
+	} catch (SQLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
 
-	public List<UsuarioBean> consultaByName(String nome, Long usuarioLogado, int offset, int n) {
+	return usuario;
 
-		List<UsuarioBean> listar = new ArrayList<>();
-		String query = "select * from usuario where upper(nome) like upper(?) and usuario_id = ? "
-				+ "order by id offset ? fetch first ? rows only";
+    }
 
-		try {
+    public UsuarioBean consultarById(String id) {
 
-			PreparedStatement statment = conn.prepareStatement(query);
-			statment.setString(1, "%" + nome + "%");
-			statment.setLong(2, usuarioLogado);
-			statment.setInt(3, offset);
-			statment.setInt(4, n);
-			ResultSet resultSet = statment.executeQuery();
+	String query = "select * from usuario where id = ?";
+	UsuarioBean usuario = null;
 
-			while (resultSet.next()) {
+	try {
+	    PreparedStatement statment = conn.prepareStatement(query);
+	    statment.setLong(1, Long.parseLong(id));
+	    ResultSet resultSet = statment.executeQuery();
 
-				String login = resultSet.getString("login");
-				Long id = resultSet.getLong("id");
-				String email = resultSet.getString("email");
-				String senha = resultSet.getString("senha");
-				String sexo = resultSet.getString("sexo");
-				String image64 = resultSet.getString("imagem");
-				String tipoFile = resultSet.getString("tipofile");
-				String perfil = resultSet.getString("useradmin");
+	    if (resultSet.next()) {
 
-				UsuarioBean usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipoFile);
+		String login = resultSet.getString("login");
+		String nome = resultSet.getString("nome");
+		String email = resultSet.getString("email");
+		String senha = resultSet.getString("senha");
+		String sexo = resultSet.getString("sexo");
+		String image64 = resultSet.getString("imagem");
+		String tipoFile = resultSet.getString("tipofile");
+		String perfil = resultSet.getString("useradmin");
 
-				usuario.setCep(resultSet.getString("cep"));
-				usuario.setRua(resultSet.getString("rua"));
-				usuario.setBairro(resultSet.getString("bairro"));
-				usuario.setCidade(resultSet.getString("cidade"));
-				usuario.setUf(resultSet.getString("uf"));
-				usuario.setNumero(resultSet.getString("numero"));
+		usuario = new UsuarioBean(Long.parseLong(id), nome, email, login, senha, perfil, sexo, image64,
+			tipoFile);
 
-				listar.add(usuario);
+		usuario.setCep(resultSet.getString("cep"));
+		usuario.setRua(resultSet.getString("rua"));
+		usuario.setBairro(resultSet.getString("bairro"));
+		usuario.setCidade(resultSet.getString("cidade"));
+		usuario.setUf(resultSet.getString("uf"));
+		usuario.setNumero(resultSet.getString("numero"));
 
-			}
+	    }
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return listar;
-
+	} catch (SQLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
 
-	public boolean validarLogin(String login) {
+	return usuario;
 
-		String query = "select count(1) > 0 as existe from usuario where upper(login) = upper(?)";
+    }
 
-		boolean teste = false;
+    public UsuarioBean consultarById(String id, Long userLogado) {
 
-		try {
+	String query = "select * from usuario where id = ? and usuario_id=?";
+	UsuarioBean usuario = null;
 
-			PreparedStatement st = conn.prepareStatement(query);
+	try {
+	    PreparedStatement statment = conn.prepareStatement(query);
+	    statment.setLong(1, Long.parseLong(id));
+	    statment.setLong(2, userLogado);
 
-			st.setString(1, login);
+	    ResultSet resultSet = statment.executeQuery();
 
-			ResultSet resultado = st.executeQuery();
+	    if (resultSet.next()) {
 
-			resultado.next();
+		String login = resultSet.getString("login");
+		String nome = resultSet.getString("nome");
+		String email = resultSet.getString("email");
+		String senha = resultSet.getString("senha");
+		String sexo = resultSet.getString("sexo");
+		String image64 = resultSet.getString("imagem");
+		String tipoFile = resultSet.getString("tipofile");
+		String perfil = resultSet.getString("useradmin");
 
-			teste = resultado.getBoolean("existe");
+		usuario = new UsuarioBean(Long.parseLong(id), nome, email, login, senha, perfil, sexo, image64,
+			tipoFile);
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		usuario.setCep(resultSet.getString("cep"));
+		usuario.setRua(resultSet.getString("rua"));
+		usuario.setBairro(resultSet.getString("bairro"));
+		usuario.setCidade(resultSet.getString("cidade"));
+		usuario.setUf(resultSet.getString("uf"));
+		usuario.setNumero(resultSet.getString("numero"));
+	    }
 
-		return teste;
-
+	} catch (SQLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
 
-	public void gravarImagem(String file, String login, String senha) {
+	return usuario;
 
-		String query = "UPDATE USUARIO SET imagem = ?, tipofile=? WHERE login = ? AND senha=?";
-		String base_64 = file.split(",")[1];
-		String tipo_arquivo = file.split(",")[0].split(";")[0].split("/")[1];
+    }
 
-		try {
-			PreparedStatement insert = conn.prepareStatement(query);
+    public List<UsuarioBean> consultaByName(String nome, Long usuarioLogado, int offset, int n) {
 
-			insert.setString(1, base_64);
-			insert.setString(2, tipo_arquivo);
-			insert.setString(3, login);
-			insert.setString(4, senha);
+	List<UsuarioBean> listar = new ArrayList<>();
+	String query = "select * from usuario where upper(nome) like upper(?) and usuario_id = ? "
+		+ "order by id offset ? fetch first ? rows only";
 
-			insert.executeUpdate();
+	try {
 
-			conn.commit();
+	    PreparedStatement statment = conn.prepareStatement(query);
+	    statment.setString(1, "%" + nome + "%");
+	    statment.setLong(2, usuarioLogado);
+	    statment.setInt(3, offset);
+	    statment.setInt(4, n);
+	    ResultSet resultSet = statment.executeQuery();
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	    while (resultSet.next()) {
 
+		String login = resultSet.getString("login");
+		Long id = resultSet.getLong("id");
+		String email = resultSet.getString("email");
+		String senha = resultSet.getString("senha");
+		String sexo = resultSet.getString("sexo");
+		String image64 = resultSet.getString("imagem");
+		String tipoFile = resultSet.getString("tipofile");
+		String perfil = resultSet.getString("useradmin");
+
+		UsuarioBean usuario = new UsuarioBean(id, nome, email, login, senha, perfil, sexo, image64, tipoFile);
+
+		usuario.setCep(resultSet.getString("cep"));
+		usuario.setRua(resultSet.getString("rua"));
+		usuario.setBairro(resultSet.getString("bairro"));
+		usuario.setCidade(resultSet.getString("cidade"));
+		usuario.setUf(resultSet.getString("uf"));
+		usuario.setNumero(resultSet.getString("numero"));
+
+		listar.add(usuario);
+
+	    }
+
+	} catch (SQLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
+
+	return listar;
+
+    }
+
+    public boolean validarLogin(String login) {
+
+	String query = "select count(1) > 0 as existe from usuario where upper(login) = upper(?)";
+
+	boolean teste = false;
+
+	try {
+
+	    PreparedStatement st = conn.prepareStatement(query);
+
+	    st.setString(1, login);
+
+	    ResultSet resultado = st.executeQuery();
+
+	    resultado.next();
+
+	    teste = resultado.getBoolean("existe");
+
+	} catch (SQLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+
+	return teste;
+
+    }
+
+    public void gravarImagem(String file, String login, String senha) {
+
+	String query = "UPDATE USUARIO SET imagem = ?, tipofile=? WHERE login = ? AND senha=?";
+	String base_64 = file.split(",")[1];
+	String tipo_arquivo = file.split(",")[0].split(";")[0].split("/")[1];
+
+	try {
+	    PreparedStatement insert = conn.prepareStatement(query);
+
+	    insert.setString(1, base_64);
+	    insert.setString(2, tipo_arquivo);
+	    insert.setString(3, login);
+	    insert.setString(4, senha);
+
+	    insert.executeUpdate();
+
+	    conn.commit();
+
+	} catch (SQLException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+
+    }
 
 }

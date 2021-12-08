@@ -35,6 +35,6 @@
       <!-- Style.css -->
       <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/css/style.css">
       <script src="<%= request.getContextPath() %>/assets/curso-jsp-js/cursojsp.js" type="text/javascript" defer>	</script>
-     
+      <link href="https://code.jquery.com/ui/1.9.1/themes/smoothness/jquery-ui.css" rel="stylesheet">
       
   </head>
