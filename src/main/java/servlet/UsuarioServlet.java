@@ -126,6 +126,11 @@ public class UsuarioServlet extends Util_Servlet {
 
                     request.setAttribute("listaUser", daoUser.listarTodos(super.getUsuarioLogado(request)));
 
+                } else {
+
+                    request.setAttribute("listaUser",
+                            daoUser.listarTodos(super.getUsuarioLogado(request), dataInicial, dataFinal));
+
                 }
 
                 request.setAttribute("dataInicial", dataInicial);
