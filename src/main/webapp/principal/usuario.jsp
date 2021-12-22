@@ -58,7 +58,12 @@
 																<input type="text" name="nome" id="nome" class="form-control" required="required" value="${newuser.nome}"> <span class="form-bar"></span> <label class="float-label">Nome</label>
 															</div>
 															<div class="form-group form-default form-static-label">
-																<input type="text"  name="nascimento" id="nascimento" class="form-control" required="required" value="${newuser.nascimento}"> <span class="form-bar"></span> <label class="float-label">Data de Nascimento</label>
+																<input type="text" name="nascimento" id="nascimento" class="form-control" required="required" value="${newuser.nascimento}"> <span class="form-bar"></span> <label
+																	class="float-label">Data de Nascimento</label>
+															</div>
+															<div class="form-group form-default form-static-label">
+																<input type="text" name="rendamensal" id="rendamensal" class="form-control" required="required" value="${newuser.rendamensal}"> <span class="form-bar"></span> <label
+																	class="float-label">Renda Mensal</label>
 															</div>
 															<div class="form-group form-default form-static-label">
 																<input type="email" name="email" id="email" class="form-control" required="required" value="${newuser.email}"> <span class="form-bar"></span> <label class="float-label">Email</label>
@@ -71,24 +76,24 @@
 																		<%UsuarioBean usuario = (UsuarioBean) request.getAttribute("newuser");
 if (usuario != null && usuario.getPerfil().equals("Administrador")) {
 
-	out.print(" ");
-	out.print("selected=\"selected\"");
-	out.print(" ");
+    out.print(" ");
+    out.print("selected=\"selected\"");
+    out.print(" ");
 
 }%>>Administrador</option>
 
 																	<option value="Secretaria" <%if (usuario != null && usuario.getPerfil().equals("Secretaria")) {
 
-	out.print(" ");
-	out.print("selected=\"selected\"");
-	out.print(" ");
+    out.print(" ");
+    out.print("selected=\"selected\"");
+    out.print(" ");
 
 }%>>Secretária</option>
 
 																	<option value="Auxiliar" <%if (usuario != null && usuario.getPerfil().equals("Auxiliar")) {
-	out.print(" ");
-	out.print("selected =\"selected\"");
-	out.print(" ");
+    out.print(" ");
+    out.print("selected =\"selected\"");
+    out.print(" ");
 
 }%>>Auxiliar</option>
 																</select> <span class="form-bar"></span> <label class="float-label">Perfil</label>
@@ -99,15 +104,16 @@ if (usuario != null && usuario.getPerfil().equals("Administrador")) {
 																<input type="radio" name="sexo" value="Masculino"
 																	<%UsuarioBean user = (UsuarioBean) request.getAttribute("newuser");
 if (user != null && user.getSexo().equals("Masculino")) {
-	out.print(" ");
-	out.print("checked=\"checked\"");
-	out.print(" ");
+    out.print(" ");
+    out.print("checked=\"checked\"");
+    out.print(" ");
 }%>><label>Masculino</label>
-																<input type="radio" name="sexo" value="Feminino" <%if (user != null && user.getSexo().equals("Feminino")) {
+																<input type="radio" name="sexo" value="Feminino"
+																	<%if (user != null && user.getSexo().equals("Feminino")) {
 
-	out.print(" ");
-	out.print("checked=\"checked\"");
-	out.print(" ");
+    out.print(" ");
+    out.print("checked=\"checked\"");
+    out.print(" ");
 }%>><label>Feminino</label>
 
 															</div>
@@ -184,8 +190,8 @@ if (user != null && user.getSexo().equals("Masculino")) {
 												<%
 												int totalPagina = (int) request.getAttribute("totalPagina");
 												for (int p = 0; p < totalPagina; p++) {
-													String url = request.getContextPath() + "/salvarUsuario?acao=paginar&pagina=" + (p * 5);
-													out.print("<li class=\"page-item\"><a class=\"page-link\" href=\"" + url + "#\">" + (p + 1) + "</a></li>");
+												    String url = request.getContextPath() + "/salvarUsuario?acao=paginar&pagina=" + (p * 5);
+												    out.print("<li class=\"page-item\"><a class=\"page-link\" href=\"" + url + "#\">" + (p + 1) + "</a></li>");
 
 												}
 												%>

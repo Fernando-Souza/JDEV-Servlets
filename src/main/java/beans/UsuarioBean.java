@@ -1,6 +1,8 @@
 package beans;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class UsuarioBean {
 
@@ -21,201 +23,230 @@ public class UsuarioBean {
     private String uf;
     private String numero;
     private LocalDate nascimento;
+    private double rendamensal;
+    private List<Telefone> telefones;
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     public UsuarioBean() {
 
     }
 
     public UsuarioBean(Long id, String nome, String email, String login, String senha, String perfil, String sexo,
-	    String foto) {
+            String foto) {
 
-	this(id, nome, email, login, perfil, sexo);
-	this.senha = senha;
-	this.fotouser = foto;
-	this.extensaofoto = foto.split(",")[0].split(";")[0].split("/")[1];
-	this.image64 = foto.split(",")[1];
+        this(id, nome, email, login, perfil, sexo);
+        this.senha = senha;
+        this.fotouser = foto;
+        this.extensaofoto = foto.split(",")[0].split(";")[0].split("/")[1];
+        this.image64 = foto.split(",")[1];
 
     }
 
     public UsuarioBean(Long id, String nome, String email, String login, String senha, String perfil, String sexo,
-	    String image64, String extensaofoto) {
+            String image64, String extensaofoto) {
 
-	this(id, nome, email, login, perfil, sexo);
-	this.senha = senha;
-	this.image64 = image64;
-	this.extensaofoto = extensaofoto;
-	this.fotouser = "data:image/" + extensaofoto + ";base64," + image64;
+        this(id, nome, email, login, perfil, sexo);
+        this.senha = senha;
+        this.image64 = image64;
+        this.extensaofoto = extensaofoto;
+        this.fotouser = "data:image/" + extensaofoto + ";base64," + image64;
 
     }
 
     public UsuarioBean(Long id, String nome, String email, String login, String senha, String perfil, String sexo) {
 
-	this(id, nome, email, login, perfil, sexo);
-	this.senha = senha;
+        this(id, nome, email, login, perfil, sexo);
+        this.senha = senha;
 
     }
 
     public UsuarioBean(Long id, String nome, String email, String login, String perfil, String sexo) {
 
-	this.id = id;
-	this.nome = nome;
-	this.email = email;
-	this.login = login;
-	this.perfil = perfil;
-	this.sexo = sexo;
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.login = login;
+        this.perfil = perfil;
+        this.sexo = sexo;
 
     }
 
     public String getLogin() {
-	return login;
+        return login;
     }
 
     public void setLogin(String login) {
-	this.login = login;
+        this.login = login;
     }
 
     public String getSenha() {
-	return senha;
+        return senha;
     }
 
     public void setSenha(String senha) {
-	this.senha = senha;
+        this.senha = senha;
     }
 
     public Long getId() {
-	return id;
+        return id;
     }
 
     public void setId(Long id) {
-	this.id = id;
+        this.id = id;
     }
 
     public String getNome() {
-	return nome;
+        return nome;
     }
 
     public void setNome(String nome) {
-	this.nome = nome;
+        this.nome = nome;
     }
 
     public String getEmail() {
-	return email;
+        return email;
     }
 
     public void setEmail(String email) {
-	this.email = email;
+        this.email = email;
     }
 
     public boolean isAdmin() {
 
-	return perfil.equals("Administrador") ? true : false;
+        return perfil.equals("Administrador") ? true : false;
     }
 
     public String getSexo() {
-	return sexo;
+        return sexo;
     }
 
     public void setSexo(String sexo) {
-	this.sexo = sexo;
+        this.sexo = sexo;
     }
 
     public String getPerfil() {
-	return perfil;
+        return perfil;
     }
 
     public void setPerfil(String perfil) {
-	this.perfil = perfil;
+        this.perfil = perfil;
     }
 
     public String getFotouser() {
-	return fotouser;
+        return fotouser;
     }
 
     public void setFotouser(String fotouser) {
-	this.fotouser = fotouser;
+        this.fotouser = fotouser;
     }
 
     public void setFotouser(String baset64, String extensao) {
 
-	this.fotouser = "data:image/" + extensaofoto + ";base64," + image64;
+        this.fotouser = "data:image/" + extensaofoto + ";base64," + image64;
     }
 
     public String getImage64() {
-	return image64;
+        return image64;
     }
 
     public void setImage64(String image64) {
-	this.image64 = image64;
+        this.image64 = image64;
     }
 
     public String getExtensaofoto() {
-	return extensaofoto;
+        return extensaofoto;
     }
 
     public void setExtensaofoto(String extensaofoto) {
-	this.extensaofoto = extensaofoto;
+        this.extensaofoto = extensaofoto;
     }
 
     public String getCep() {
-	return cep;
+        return cep;
     }
 
     public void setCep(String cep) {
-	this.cep = cep;
+        this.cep = cep;
     }
 
     public String getRua() {
-	return rua;
+        return rua;
     }
 
     public void setRua(String rua) {
-	this.rua = rua;
+        this.rua = rua;
     }
 
     public String getBairro() {
-	return bairro;
+        return bairro;
     }
 
     public void setBairro(String bairro) {
-	this.bairro = bairro;
+        this.bairro = bairro;
     }
 
     public String getCidade() {
-	return cidade;
+        return cidade;
     }
 
     public void setCidade(String cidade) {
-	this.cidade = cidade;
+        this.cidade = cidade;
     }
 
     public String getUf() {
-	return uf;
+        return uf;
     }
 
     public void setUf(String uf) {
-	this.uf = uf;
+        this.uf = uf;
     }
 
     public String getNumero() {
-	return numero;
+        return numero;
     }
 
     public void setNumero(String numero) {
-	this.numero = numero;
+        this.numero = numero;
     }
 
-    public LocalDate getNascimento() {
-	return nascimento;
+    public String getNascimento() {
+        return nascimento.format(formatter);
     }
 
     public void setNascimento(LocalDate nascimento) {
-	this.nascimento = nascimento;
+        this.nascimento = nascimento;
+    }
+
+    public void setNascimento(String nascimento) {
+
+        this.nascimento = LocalDate.parse(nascimento, formatter);
+    }
+
+    public double getRendamensal() {
+        return rendamensal;
+    }
+
+    public void setRendamensal(double rendamensal) {
+        this.rendamensal = rendamensal;
+    }
+
+    public List<Telefone> getTelefones() {
+        return telefones;
+    }
+
+    public void setTelefones(List<Telefone> telefones) {
+        this.telefones = telefones;
+    }
+
+    public void addTelefone(Telefone telefone) {
+        this.telefones.add(telefone);
     }
 
     @Override
     public String toString() {
-	return "UsuarioBean [id=" + id + ", nome=" + nome + ", email=" + email + ", login=" + login + ", senha=" + senha
-		+ ", perfil=" + perfil + "]";
+        return "UsuarioBean [id=" + id + ", nome=" + nome + ", email=" + email + ", login=" + login + ", senha=" + senha
+                + ", perfil=" + perfil + ", telefones=" + telefones + "]";
     }
 
 }

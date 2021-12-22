@@ -1,4 +1,22 @@
 
+$("#rendamensal").maskMoney({showSymbol:true,symbol:"R$ ",decimal:",",thousands:"."});
+
+const formmatter = new Intl.NumberFormat('pt-BR',{
+    currency:'BRL',
+    minimumFractionDigits:2
+});
+
+$("#rendamensal").val(formatter.format($("#rendamensal").val))
+
+$("#rendamensal").focus
+
+
+var dataNascimento = $("#dataNascimento").val;
+var dateFormat =  new Date(dataNascimento);
+$("#dataNascimento").val(dateFormat.toLocaleDateString('pt-BR',{timezone:'UTC'}));
+$("nome").focus;
+
+
 $( function() {
 	  
 	  $("#nascimento").datepicker({
@@ -12,6 +30,8 @@ $( function() {
 		    prevText: 'Anterior'
 		});
 } );
+
+
 
 $("#numero").keypress(function(event){
 				return/\d/.test(String.fromCharCode(event.keyCode));
