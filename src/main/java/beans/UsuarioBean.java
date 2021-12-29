@@ -211,7 +211,7 @@ public class UsuarioBean {
     }
 
     public String getNascimento() {
-        return nascimento.format(formatter);
+        return this.nascimento == null ? null : nascimento.format(formatter);
     }
 
     public void setNascimento(LocalDate nascimento) {

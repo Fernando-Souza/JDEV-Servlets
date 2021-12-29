@@ -33,7 +33,7 @@
 													<div class="card-block">
 														<h4 class="sub-title">Relatório do usuário</h4>
 														<form class="form-material" action="<%=request.getContextPath()%>/salvarUsuario" id="formUser" method="get">
-															<input type="hidden" name="acao" value="imprimirRelatorioUser">
+															<input type="hidden" id="acaoRelatorioImprimirTipo" name="acao" value="imprimirRelatorioUser">
 															<div class="form-row align-items-center">
 																<div class="col-auto">
 																	<label class="sr-only" for="dataInicial">Data Inicial</label> <input type="text" class="form-control mb-2" id="dataInicial" name="dataInicial" value="${dataInicial}">
@@ -44,7 +44,8 @@
 																	</div>
 																</div>
 																<div class="col-auto">
-																	<button type="submit" class="btn btn-primary mb-2">Imprimir Relatório</button>
+																	<button type="button" onclick="imprimirHtml();" class="btn btn-primary mb-2">Imprimir Relatório</button>
+																	<button type="button" onclick="imprimirPdf();" class="btn btn-primary mb-2">Imprimir PDF</button>
 																</div>
 															</div>
 
@@ -103,6 +104,23 @@
 		<!-- Required Jquery -->
 		<jsp:include page="javascriptfile.jsp"></jsp:include>
 		<script type="text/javascript">
+		
+		function imprimirHtml(){
+		
+		document.getElementById("acaoRelatorioImprimirTipo").value ="imprimirRelatorioUser";
+		
+		$("#formUser").submit();
+		
+		}
+		
+		function imprimirPdf(){
+	        
+	        document.getElementById("acaoRelatorioImprimirTipo").value ="imprimirRelatorioPDF";
+	        
+	        $("#formUser").submit();
+	        
+	        }
+		
 			$(function() {
 
 				$("#dataInicial").datepicker(

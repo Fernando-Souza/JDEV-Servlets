@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import beans.UsuarioBean;
 import dao.UsuarioDao;
+import util.ReportUtil;
 
 @WebServlet(urlPatterns = { "/salvarUsuario" })
 @MultipartConfig
@@ -135,8 +136,32 @@ public class UsuarioServlet extends Util_Servlet {
 
                 request.setAttribute("dataInicial", dataInicial);
                 request.setAttribute("dataFinal", dataFinal);
-
                 request.getRequestDispatcher("principal/reluser.jsp").forward(request, response);
+
+            } else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("imprimirRelatorioPDF")) {
+
+                String dataInicial = request.getParameter("dataInicial");
+                String dataFinal = request.getParameter("dataFinal");
+                List<UsuarioBean> listaUser = null;
+
+                if (dataInicial == null || dataInicial.isEmpty() && dataFinal == null || dataFinal.isEmpty()) {
+
+                    listaUser = daoUser.listarTodos(super.getUsuarioLogado(request));
+
+                    request.setAttribute("listaUser", listaUser);
+
+                } else {
+
+                    listaUser = daoUser.listarTodos(super.getUsuarioLogado(request), dataInicial, dataFinal);
+
+                }
+
+                byte[] relatorio = new ReportUtil().geraPDF(listaUser, "rel-user-jsp", request.getServletContext());
+
+                response.setHeader("Content-Disposition", "attatchment;filename=arquivo.pdf");
+                response.getOutputStream().write(relatorio);
+
+                // request.setAttribute("listaUser", listaUser);
 
             } else {
                 request.setAttribute("totalPagina", daoUser.numeroPaginas(super.getUsuarioLogado(request), 5));
@@ -153,7 +178,9 @@ public class UsuarioServlet extends Util_Servlet {
 
             }
 
-        } catch (Exception e) {
+        } catch (
+
+        Exception e) {
 
             e.printStackTrace();
             RequestDispatcher redirecionar = request.getRequestDispatcher("error.jsp");
