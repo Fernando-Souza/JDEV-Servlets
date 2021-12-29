@@ -1,8 +1,10 @@
 package servlet;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -156,7 +158,12 @@ public class UsuarioServlet extends Util_Servlet {
 
                 }
 
-                byte[] relatorio = new ReportUtil().geraPDF(listaUser, "rel-user-jsp", request.getServletContext());
+                HashMap<String, Object> params = new HashMap<>();
+
+                params.put("PARAM_SUB_REPORT", request.getServletContext().getRealPath("relatorio") + File.separator);
+
+                byte[] relatorio = new ReportUtil().geraPDF(listaUser, "rel-user-jsp", params,
+                        request.getServletContext());
 
                 response.setHeader("Content-Disposition", "attatchment;filename=arquivo.pdf");
                 response.getOutputStream().write(relatorio);
