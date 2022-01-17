@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import beans.UsuarioBean;
 import dao.UsuarioDao;
+import dto.GraficoSalario;
 import util.ReportUtil;
 
 @WebServlet(urlPatterns = { "/salvarUsuario" })
@@ -170,7 +171,28 @@ public class UsuarioServlet extends Util_Servlet {
 
                 // request.setAttribute("listaUser", listaUser);
 
-            } else {
+            } else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("graficoSalario")) {
+
+                String dataInicial = request.getParameter("dataInicial");
+                String dataFinal = request.getParameter("dataFinal");
+
+                if (dataInicial == null || dataInicial.isEmpty() && dataFinal == null || dataFinal.isEmpty()) {
+
+                    GraficoSalario graficoSalario = daoUser.getMediaSalarial(super.getUsuarioLogado(request));
+
+                    ObjectMapper mapper = new ObjectMapper();
+
+                    String json = mapper.writeValueAsString(graficoSalario);
+
+                    response.getWriter().write(json);
+
+                } else {
+
+                }
+
+            }
+
+            else {
                 request.setAttribute("totalPagina", daoUser.numeroPaginas(super.getUsuarioLogado(request), 5));
                 RequestDispatcher view = request.getRequestDispatcher("principal/usuario.jsp");
                 view.forward(request, response);

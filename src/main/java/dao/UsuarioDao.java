@@ -13,6 +13,7 @@ import java.util.List;
 import beans.Telefone;
 import beans.UsuarioBean;
 import connection.SingleConnection;
+import dto.GraficoSalario;
 
 public class UsuarioDao {
 
@@ -23,6 +24,41 @@ public class UsuarioDao {
     public UsuarioDao() {
 
         conn = SingleConnection.getConnection();
+    }
+
+    public GraficoSalario getMediaSalarial(Long userLogado) {
+
+        String sql = "select round(avg(rendamensal)::numeric,2) as media_salarial, useradmin as perfil from usuario where usuario_id = ? group by perfil";
+        List<String> perfis = new ArrayList<>();
+        List<Double> salarios = new ArrayList<>();
+
+        GraficoSalario gs = new GraficoSalario();
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setLong(1, userLogado);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                Double mediaSalarial = rs.getDouble("media_salarial");
+                String perfil = rs.getString("perfil");
+
+                perfis.add(perfil);
+                salarios.add(mediaSalarial);
+            }
+
+            gs.setPerfis(perfis);
+            gs.setSalarios(salarios);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return gs;
+
     }
 
     public UsuarioBean salvar(UsuarioBean usuario, Long usuarioLogado) {
