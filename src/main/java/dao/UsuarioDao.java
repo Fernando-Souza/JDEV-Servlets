@@ -880,4 +880,40 @@ public class UsuarioDao {
 
     }
 
+    public GraficoSalario getMediaSalarial(Long usuarioLogado, String dataInicial, String dataFinal) {
+
+        String sql = "select round(avg(rendamensal)::numeric,2) as media_salarial, useradmin as perfil from usuario where usuario_id = ? and datanascimento <=? and datanascimento <=? group by perfil";
+        List<String> perfis = new ArrayList<>();
+        List<Double> salarios = new ArrayList<>();
+
+        GraficoSalario gs = new GraficoSalario();
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setLong(1, usuarioLogado);
+            ps.setDate(2, Date.valueOf(LocalDate.parse(dataInicial, formatter)));
+            ps.setDate(3, Date.valueOf(LocalDate.parse(dataFinal, formatter)));
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                Double mediaSalarial = rs.getDouble("media_salarial");
+                String perfil = rs.getString("perfil");
+
+                perfis.add(perfil);
+                salarios.add(mediaSalarial);
+            }
+
+            gs.setPerfis(perfis);
+            gs.setSalarios(salarios);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return gs;
+    }
+
 }

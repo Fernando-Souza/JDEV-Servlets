@@ -188,6 +188,15 @@ public class UsuarioServlet extends Util_Servlet {
 
                 } else {
 
+                    GraficoSalario graficoSalario = daoUser.getMediaSalarial(super.getUsuarioLogado(request),
+                            dataInicial, dataFinal);
+
+                    ObjectMapper mapper = new ObjectMapper();
+
+                    String json = mapper.writeValueAsString(graficoSalario);
+
+                    response.getWriter().write(json);
+
                 }
 
             }
