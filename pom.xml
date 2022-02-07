@@ -9,8 +9,8 @@
 	<name>curso-jsp</name>
 	<description>novo curso jsp Jdev treinamentos</description>
 	<properties>
-        <maven.compiler.target>17</maven.compiler.target>
-        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
     </properties>
 	<dependencies>
 		<dependency>
