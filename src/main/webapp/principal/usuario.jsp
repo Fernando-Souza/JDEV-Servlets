@@ -213,6 +213,32 @@ if (user != null && user.getSexo().equals("Masculino")) {
 	<jsp:include page="javascriptfile.jsp"></jsp:include>
 	<!-- Modal -->
 	<jsp:include page="modal.jsp"></jsp:include>
+	<script type="text/javascript">
+	
+	var dataNascimento = $("#nascimento").val;	
+
+	if(dataNascimento != null && dataNascimento !=''){
+	
+	var dateFormat =  new Date(dataNascimento);
+	$("#nascimento").val(dateFormat.toLocaleDateString('pt-BR',{timezone:'UTC'}));
+	
+	}
+	
+	$( function() {
+	      
+	      $("#nascimento").datepicker({
+	            dateFormat: 'dd/mm/yy',
+	            dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+	            dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+	            dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+	            monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+	            monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+	            nextText: 'Próximo',
+	            prevText: 'Anterior'
+	        });
+	} );
+	
+	</script>
 
 </body>
 

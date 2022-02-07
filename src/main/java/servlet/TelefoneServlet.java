@@ -3,15 +3,14 @@ package servlet;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import beans.Telefone;
 import beans.UsuarioBean;
 import dao.TelefoneDao;
 import dao.UsuarioDao;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/TelefoneServlet")
 public class TelefoneServlet extends Util_Servlet {

@@ -6,31 +6,11 @@ const formmatter = new Intl.NumberFormat('pt-BR',{
     minimumFractionDigits:2
 });
 
-$("#rendamensal").val(formatter.format($("#rendamensal").val))
+$("#rendamensal").val(formmatter.format($("#rendamensal").val));
 
-$("#rendamensal").focus
+$("#rendamensal").focus;
 
-
-var dataNascimento = $("#dataNascimento").val;
-var dateFormat =  new Date(dataNascimento);
-$("#dataNascimento").val(dateFormat.toLocaleDateString('pt-BR',{timezone:'UTC'}));
 $("nome").focus;
-
-
-$( function() {
-	  
-	  $("#nascimento").datepicker({
-		    dateFormat: 'dd/mm/yy',
-		    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
-		    dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
-		    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
-		    monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
-		    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
-		    nextText: 'Próximo',
-		    prevText: 'Anterior'
-		});
-} );
-
 
 
 $("#numero").keypress(function(event){

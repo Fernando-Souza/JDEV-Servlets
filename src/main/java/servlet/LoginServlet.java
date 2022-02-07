@@ -14,84 +14,84 @@ import dao.UsuarioDao;
 
 @WebServlet(urlPatterns = { "/principal/LoginServlet", "/LoginServlet" })
 public class LoginServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private UsuarioDao userDao = new UsuarioDao();
+    private UsuarioDao userDao = new UsuarioDao();
 
-	public LoginServlet() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    public LoginServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-		String acao = request.getParameter("acao");
+        String acao = request.getParameter("acao");
 
-		if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("logout")) {
+        if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("logout")) {
 
-			request.getSession().invalidate();
-			RequestDispatcher redirecionar = request.getRequestDispatcher("index.jsp");
+            request.getSession().invalidate();
+            RequestDispatcher redirecionar = request.getRequestDispatcher("index.jsp");
 
-			redirecionar.forward(request, response);
+            redirecionar.forward(request, response);
 
-		} else {
+        } else {
 
-			doPost(request, response);
-		}
+            doPost(request, response);
+        }
 
-	}
+    }
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-		String login = request.getParameter("login");
-		String senha = request.getParameter("senha");
-		String url = request.getParameter("url");
+        String login = request.getParameter("login");
+        String senha = request.getParameter("senha");
+        String url = request.getParameter("url");
 
-		try {
-			if (login != null && !login.isEmpty() && senha != null && !senha.isEmpty()) {
+        try {
+            if (login != null && !login.isEmpty() && senha != null && !senha.isEmpty()) {
 
-				LoginDAO daoLogin = new LoginDAO();
+                LoginDAO daoLogin = new LoginDAO();
 
-				if (daoLogin.validarLoginSenha(login, senha)) {
+                if (daoLogin.validarLoginSenha(login, senha)) {
 
-					request.getSession().setAttribute("usuario", daoLogin.getLogin());
-					request.getSession().setAttribute("isAdmin",
-							userDao.consultarUserLogado(login).isAdmin() == true ? "true" : "false");
-					request.getSession().setAttribute("perfil", userDao.consultarUserLogado(login).getPerfil());
-					request.getSession().setAttribute("imageuser", userDao.consultarUserLogado(login).getFotouser());
+                    request.getSession().setAttribute("usuario", daoLogin.getLogin());
+                    request.getSession().setAttribute("isAdmin",
+                            userDao.consultarUserLogado(login).isAdmin() == true ? "true" : "false");
+                    request.getSession().setAttribute("perfil", userDao.consultarUserLogado(login).getPerfil());
+                    request.getSession().setAttribute("imageuser", userDao.consultarUserLogado(login).getFotouser());
 
-					if (url == null || url.equals("null")) {
+                    if (url == null || url.equals("null")) {
 
-						url = "principal/principal.jsp";
-					}
-					RequestDispatcher dispatcher = request.getRequestDispatcher(url);
-					dispatcher.forward(request, response);
+                        url = "principal/principal.jsp";
+                    }
+                    RequestDispatcher dispatcher = request.getRequestDispatcher(url);
+                    dispatcher.forward(request, response);
 
-				} else {
+                } else {
 
-					RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
-					request.setAttribute("msg", "Informe o login e senha corretamente!");
-					dispatcher.forward(request, response);
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
+                    request.setAttribute("msg", "Informe o login e senha corretamente!");
+                    dispatcher.forward(request, response);
 
-				}
+                }
 
-			} else {
+            } else {
 
-				RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
-				request.setAttribute("msg", "Informe o login e senha corretamente!");
-				dispatcher.forward(request, response);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
+                request.setAttribute("msg", "Informe o login e senha corretamente!");
+                dispatcher.forward(request, response);
 
-			}
-		} catch (Exception e) {
+            }
+        } catch (Exception e) {
 
-			e.printStackTrace();
-			RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
-			request.setAttribute("msg", e.getMessage());
-			dispatcher.forward(request, response);
-		}
+            e.printStackTrace();
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+            request.setAttribute("msg", e.getMessage());
+            dispatcher.forward(request, response);
+        }
 
-	}
+    }
 
 }
