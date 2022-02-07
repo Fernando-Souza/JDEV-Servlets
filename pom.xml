@@ -47,8 +47,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-api</artifactId>
-			<version>9.0.58</version>
+			<artifactId>tomcat-coyote</artifactId>
+			<version>10.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
